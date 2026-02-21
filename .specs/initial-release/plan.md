@@ -1,4 +1,4 @@
-# Kanbin Release & Distribution Plan
+# Kanbin Initial Release & Distribution Plan
 
 This document outlines the strategy for releasing and distributing all components of the Kanbin application (Backend, Frontend, and CLI) for public use.
 
@@ -55,11 +55,11 @@ To successfully deploy Kanbin to production, the deploying developer must comple
   - Wait for Fly.io to issue and verify the Let's Encrypt SSL certificates.
 
 ### Phase 4: CLI Distribution (GitHub Actions)
-- [ ] **Release Automation:**
+- [x] **Release Automation:**
   - Create a `.github/workflows/release.yml` file to automate binary builds using [GoReleaser](https://goreleaser.com/).
   - Configure GoReleaser to build for Windows (`.exe`), macOS (`darwin`), and Linux.
   - Set the workflow to trigger on Git tags (e.g., `v1.0.0`).
-- [ ] **Package Managers (Optional but Recommended):**
+- [x] **Package Managers (Optional but Recommended):**
   - Homebrew (macOS/Linux): Create a custom Homebrew tap repository so users can run `brew install zeeshanejaz/tap/kanbin`.
   - Scoop/Winget (Windows): Add manifests for Windows package managers.
   - Go Install: Ensure users can run `go install github.com/zeeshanejaz/kanbin/cli/cmd/kanbin@latest`.

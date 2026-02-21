@@ -35,6 +35,14 @@ type UpdateTaskReq struct {
 }
 
 // Handlers
+func (r *Router) handleHealth(w http.ResponseWriter, req *http.Request) {
+	respondJSON(w, http.StatusOK, map[string]string{
+		"status":  "ok",
+		"message": "Kanbin API is live",
+		"version": "1.0.0",
+	})
+}
+
 func (r *Router) handleCreateBoard(w http.ResponseWriter, req *http.Request) {
 	var reqBody CreateBoardReq
 	if err := json.NewDecoder(req.Body).Decode(&reqBody); err != nil {
