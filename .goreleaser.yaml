@@ -67,14 +67,13 @@ scoops:
     description: "Lightweight, ephemeral Kanban boards for humans and AI agents."
     license: MIT
 
-wingets:
+winget:
   - name: kanbin
     publisher: zeeshanejaz
     publisher_url: "https://github.com/zeeshanejaz"
     publisher_support_url: "https://github.com/zeeshanejaz/kanbin/issues"
     package_identifier: zeeshanejaz.kanbin
-    package_url: "https://kanbin.app"
-    package_locale: en-US
+    homepage: "https://kanbin.app"
     description: "Lightweight, ephemeral Kanban boards for humans and AI agents."
     short_description: "Ephemeral Kanban CLI"
     license: MIT
