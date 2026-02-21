@@ -91,7 +91,7 @@ User need to provide user story description and Task description along with the 
 6. Ask the user for any additional requirements or clarifications.
 7. Breakdown the specification into smaller, manageable tasks or phases. Plan the implementation steps accordingly e.g., each step can be a separate commit or PR and independently testable.
 8. Prefer consistency with existing code patterns and architecture in the codebase.
-9. Create a markdown file in the `.specs/<task-number><name-of-the-spec>/` directory with the specification details including the phases and tasks breakdown. The task number should correspond to the work item ID from the branch name if applicable.
+9. Create a markdown file in the `.specs/<short-name-of-the-spec>/` directory with the specification details including the phases and tasks breakdown. The task number should correspond to the work item ID from the branch name if applicable.
 10. **KB Board Setup** (if user has kb CLI available):
     - Check current branch name using `git branch --show-current`
     - Suggest creating a KB board: `kb board create "<feature-name-from-branch>"`
@@ -310,8 +310,8 @@ When the user types `/pr-checklist`, execute the PR checklist to verify code qua
    
    **Branch Naming Validation:**
    - Get current branch name using `git branch --show-current`
-   - Verify branch follows naming convention: `feature|bugfix|hotfix/<work-item-id>-<description>`
-   - Example valid names: `feature/1234-add-calculator`, `bugfix/5678-fix-auth`
+   - Verify branch follows naming convention: `feature|bugfix|hotfix/<short-name>`
+   - Example valid names: `feature/add-calculator`, `bugfix/fix-auth`
    - Result: [✅ Valid branch name / ⚠️ Non-standard but acceptable / ❌ Invalid branch name]
    
    **Linting:**
