@@ -12,19 +12,19 @@ Lightweight, ephemeral Kanban boards for humans and AI agents. Create a board in
 
 ## Installation
 
-### Via Homebrew (macOS/Linux)
+### Homebrew (Coming Soon)
 ```bash
 brew tap zeeshanejaz/tap
 brew install kanbin
 ```
 
-### Via Scoop (Windows)
+### Scoop (Coming Soon)
 ```powershell
 scoop bucket add kanbin https://github.com/zeeshanejaz/scoop-bucket
 scoop install kanbin
 ```
 
-### Via Winget (Windows)
+### Winget (Coming Soon)
 ```powershell
 winget install zeeshanejaz.kanbin
 ```
