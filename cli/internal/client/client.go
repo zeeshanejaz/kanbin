@@ -22,7 +22,7 @@ func getBaseURL() string {
 	if url := os.Getenv("KANBIN_URL"); url != "" {
 		return url
 	}
-	return "https://kanbin.app/api"
+	return "https://api.kanbin.app/api"
 }
 
 func parseResponse(resp *http.Response, target interface{}) error {
