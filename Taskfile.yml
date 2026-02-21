@@ -125,3 +125,20 @@ tasks:
       - rm -rf {{.BIN_DIR}}/
       - rm -rf frontend/dist/
       - echo "==> Done."
+
+  release-cli:
+    desc: Release the CLI using GoReleaser (tag required)
+    cmds:
+      - goreleaser release --clean
+
+  release-api:
+    desc: Deploy the backend API to Fly.io
+    dir: backend
+    cmds:
+      - fly deploy
+
+  release-app:
+    desc: Deploy the frontend app to Fly.io
+    dir: frontend
+    cmds:
+      - fly deploy
