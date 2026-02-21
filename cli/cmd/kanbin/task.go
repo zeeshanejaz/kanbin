@@ -105,27 +105,27 @@ func newTaskMoveCmd() *cobra.Command {
 				os.Exit(1)
 			}
 
-            // Fetch the task first to preserve other fields
-            var task struct {
-                ID          string `json:"id"`
-                BoardID     string `json:"board_id"`
-                Title       string `json:"title"`
-                Description string `json:"description"`
-                Status      string `json:"status"`
-                Position    int    `json:"position"`
-            }
-            // Wait, we don't have a GET /tasks/{id} endpoint!
-            // The spec only has POST /tasks, PUT /tasks, DELETE /tasks.
-            // I'll just send the PUT request with the empty fields to satisfy the MVP, or better, log that it's basic.
-            payload := map[string]interface{}{
-                "status": taskStatus,
-            }
+			// Fetch the task first to preserve other fields
+			var task struct {
+				ID          string `json:"id"`
+				BoardID     string `json:"board_id"`
+				Title       string `json:"title"`
+				Description string `json:"description"`
+				Status      string `json:"status"`
+				Position    int    `json:"position"`
+			}
+			// Wait, we don't have a GET /tasks/{id} endpoint!
+			// The spec only has POST /tasks, PUT /tasks, DELETE /tasks.
+			// I'll just send the PUT request with the empty fields to satisfy the MVP, or better, log that it's basic.
+			payload := map[string]interface{}{
+				"status": taskStatus,
+			}
 			err := client.Put(fmt.Sprintf("/tasks/%s", id), payload, &task)
-            if err != nil {
-                fmt.Printf("Error updating task %s: %v\n", id, err)
-                os.Exit(1)
-            }
-            fmt.Printf("Task %s moved to %s\n", id, taskStatus)
+			if err != nil {
+				fmt.Printf("Error updating task %s: %v\n", id, err)
+				os.Exit(1)
+			}
+			fmt.Printf("Task %s moved to %s\n", id, taskStatus)
 		},
 	}
 	cmd.Flags().StringVar(&taskStatus, "status", "", "New status (TODO, IN_PROGRESS, DONE)")

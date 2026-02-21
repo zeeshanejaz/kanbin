@@ -66,13 +66,13 @@ func newBoardViewCmd() *cobra.Command {
 				fmt.Printf("Error fetching board: %v\n", err)
 				os.Exit(1)
 			}
-			
+
 			fmt.Printf("=== %s [%s] ===\n\n", result.Title, result.Key)
 			if len(result.Tasks) == 0 {
 				fmt.Println("No tasks on this board.")
 				return
 			}
-			
+
 			fmt.Printf("%s \t| %s \t| %s \t| %s\n", "ID", "STATUS", "TITLE", "DESCRIPTION")
 			fmt.Println("------------------------------------------------")
 			for _, t := range result.Tasks {
