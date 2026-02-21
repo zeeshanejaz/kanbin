@@ -1,0 +1,51 @@
+# ──────────────────────────────────────────────────────────────
+# Go
+# ──────────────────────────────────────────────────────────────
+
+# Compiled binaries / build output
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Go coverage output
+*.out
+coverage.html
+
+# Go workspace file (generated locally, not committed)
+go.work.sum
+
+# ──────────────────────────────────────────────────────────────
+# Node / Frontend
+# ──────────────────────────────────────────────────────────────
+
+node_modules/
+frontend/dist/
+frontend/.vite/
+.npm/
+
+# ──────────────────────────────────────────────────────────────
+# Environment & secrets
+# ──────────────────────────────────────────────────────────────
+
+.env
+.env.local
+.env.*.local
+
+# ──────────────────────────────────────────────────────────────
+# Editor / OS noise
+# ──────────────────────────────────────────────────────────────
+
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+*~

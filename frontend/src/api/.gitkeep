@@ -1,0 +1,3 @@
+# This directory will contain the typed API client for the kanbin REST API.
+# Files are added in the MVP1 frontend implementation phase.
+# All HTTP calls in the application must go through this layer.
