@@ -85,3 +85,15 @@ task dev-frontend    # Vite dev server
 task build-frontend  # Production build
 task lint-frontend   # ESLint
 ```
+
+## Testing the CLI Locally
+
+Once you have the backend running (`task dev-backend`) and the CLI built (`task build-cli`), you can test the CLI commands right from your terminal.
+
+```bash
+# Create a test board
+./bin/kb board create "Local Test Board"
+
+# View the test board (copy the key from the output above)
+./bin/kb board view <KEY>
+```

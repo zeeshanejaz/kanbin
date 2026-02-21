@@ -46,6 +46,24 @@ The frontend dev server starts on `http://localhost:5173` and proxies API reques
 | `task lint` | Lint all components |
 | `task clean` | Remove build artifacts |
 
+## CLI Usage
+
+Kanbin includes a command-line interface available as both `kanbin` and the shorthand `kb`. Once you run `task build`, the binaries are located in the `bin/` directory.
+
+```bash
+# General help
+./bin/kb --help
+
+# Create a new key-based anonymous board
+./bin/kb board create "My CLI Board"
+
+# View a board and its tasks
+./bin/kb board view <BOARD_KEY>
+
+# Add a new task to a board
+./bin/kb task add "Implement auth" --board <BOARD_KEY>
+```
+
 ## Documentation
 
 - [Local Development Guide](docs/local-dev.md)
