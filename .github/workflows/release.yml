@@ -21,11 +21,12 @@ jobs:
         with:
           go-version: '1.22'
           cache: true
+          cache-dependency-path: cli/go.sum
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
-          # 'latest', 'v1.1.0', or a semver range
-          version: latest
+          # Use GoReleaser v2 for Winget support and newer features
+          version: "~> v2"
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
