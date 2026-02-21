@@ -15,6 +15,16 @@ tasks:
       - cd frontend && npm install
       - echo "==> Done. Run 'task dev' to start the development stack."
 
+  up:
+    desc: Start the Docker containers
+    cmds:
+      - docker compose up -d
+
+  down:
+    desc: Stop the Docker containers
+    cmds:
+      - docker compose down
+
   dev:
     desc: Start backend and frontend dev servers concurrently
     deps: [dev-backend, dev-frontend]
@@ -51,6 +61,7 @@ tasks:
     cmds:
       - mkdir -p ../{{.BIN_DIR}}
       - go build -o ../{{.BIN_DIR}}/kanbin.exe ./cmd/kanbin/
+      - go build -o ../{{.BIN_DIR}}/kb.exe ./cmd/kanbin/
 
   build-frontend:
     desc: Build frontend production bundle

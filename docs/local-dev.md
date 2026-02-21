@@ -33,26 +33,24 @@ This installs Go module dependencies for the backend and CLI, and runs `npm inst
 cp .env.example .env
 ```
 
-Edit `.env` and fill in your values:
+Edit `.env` and fill in your values (see below for defaults):
 
 ```env
-DATABASE_URL=postgres://user:password@localhost:5432/kanbin
+DATABASE_URL=postgres://kanbin:kanbin@localhost:5432/kanbin_dev
 PORT=8080
 ```
 
-**Using Docker for PostgreSQL:**
+### 3. Start Infrastructure
+
+We use Docker Compose to manage the local database.
 
 ```bash
-docker run -d \
-  --name kanbin-db \
-  -e POSTGRES_USER=user \
-  -e POSTGRES_PASSWORD=password \
-  -e POSTGRES_DB=kanbin \
-  -p 5432:5432 \
-  postgres:15-alpine
+task up
 ```
 
-### 3. Start the development stack
+This starts a PostgreSQL 16 instance. To stop it, run `task down`.
+
+### 4. Start the development stack
 
 ```bash
 task dev

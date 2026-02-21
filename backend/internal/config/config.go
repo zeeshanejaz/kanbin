@@ -4,27 +4,26 @@ import (
 	"os"
 )
 
-// Config holds all runtime configuration for the backend server.
-// Values are loaded from environment variables with sensible defaults.
+// Config holds all the application configuration.
 type Config struct {
-	// Port is the TCP port the HTTP server listens on.
-	Port string
-
-	// DatabaseURL is the PostgreSQL connection string.
+	Port        string
 	DatabaseURL string
 }
 
 // Load reads configuration from environment variables.
-func Load() Config {
-	return Config{
-		Port:        getEnv("PORT", "8080"),
-		DatabaseURL: getEnv("DATABASE_URL", "postgres://user:password@localhost:5432/kanbin"),
+func Load() *Config {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
 	}
-}
 
-func getEnv(key, fallback string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		dbURL = "postgres://kanbin:kanbin@localhost:5432/kanbin_dev"
 	}
-	return fallback
+
+	return &Config{
+		Port:        port,
+		DatabaseURL: dbURL,
+	}
 }
