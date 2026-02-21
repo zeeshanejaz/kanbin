@@ -63,6 +63,14 @@ tasks:
       - go build -o ../{{.BIN_DIR}}/kanbin.exe ./cmd/kanbin/
       - go build -o ../{{.BIN_DIR}}/kb.exe ./cmd/kanbin/
 
+  install-cli:
+    desc: Build and install CLI to GOPATH/bin for local use
+    dir: cli
+    cmds:
+      - go install ./cmd/kanbin/
+      - echo "==> kb installed to $GOPATH/bin/ (or $GOBIN if set)"
+      - echo "==> Run 'kb --help' to verify installation"
+
   build-frontend:
     desc: Build frontend production bundle
     dir: frontend
