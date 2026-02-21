@@ -1,0 +1,2 @@
+# This directory will contain shared TypeScript type definitions.
+# Types mirror the backend domain types and are added in the MVP1 frontend phase.
