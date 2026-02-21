@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # check-tools.sh — Verifies that all required development tools are installed.
-# Run this before 'make setup' to confirm your environment is ready.
+# Run this before 'task setup' to confirm your environment is ready.
 
 set -euo pipefail
 
@@ -18,9 +18,10 @@ check() {
 }
 
 echo "Checking required tools..."
-check go         "Install from https://go.dev/dl/"
-check node       "Install from https://nodejs.org/"
-check npm        "Comes with Node.js"
+check go           "Install from https://go.dev/dl/"
+check node         "Install from https://nodejs.org/"
+check npm          "Comes with Node.js"
+check task         "Install from https://taskfile.dev/installation/"
 check golangci-lint "Install from https://golangci-lint.run/usage/install/"
 
 echo ""

@@ -23,14 +23,14 @@ Lightweight, ephemeral Kanban boards for humans and AI agents. Create a board in
 
 ```bash
 # 1. Install all dependencies
-make setup
+task setup
 
 # 2. Configure environment
 cp .env.example .env
 # Edit .env with your database URL and other settings
 
 # 3. Start the development stack
-make dev
+task dev
 ```
 
 The frontend dev server starts on `http://localhost:5173` and proxies API requests to the backend on `http://localhost:8080`.
@@ -39,12 +39,12 @@ The frontend dev server starts on `http://localhost:5173` and proxies API reques
 
 | Command | Description |
 |---|---|
-| `make setup` | Install Go and npm dependencies |
-| `make dev` | Start backend + frontend in dev mode |
-| `make build` | Build all components to `bin/` |
-| `make test` | Run all tests |
-| `make lint` | Lint all components |
-| `make clean` | Remove build artifacts |
+| `task setup` | Install Go and npm dependencies |
+| `task dev` | Start backend + frontend in dev mode |
+| `task build` | Build all components to `bin/` |
+| `task test` | Run all tests |
+| `task lint` | Lint all components |
+| `task clean` | Remove build artifacts |
 
 ## Documentation
 

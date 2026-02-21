@@ -22,7 +22,7 @@ bash scripts/check-tools.sh
 ### 1. Install dependencies
 
 ```bash
-make setup
+task setup
 ```
 
 This installs Go module dependencies for the backend and CLI, and runs `npm install` for the frontend.
@@ -55,7 +55,7 @@ docker run -d \
 ### 3. Start the development stack
 
 ```bash
-make dev
+task dev
 ```
 
 This starts:
@@ -65,27 +65,25 @@ This starts:
 ## Common Commands
 
 ```bash
-make build    # Build all components to bin/
-make test     # Run all tests
-make lint     # Run linters across all components
-make clean    # Remove build artifacts
+task build    # Build all components to bin/
+task test     # Run all tests
+task lint     # Run linters across all components
+task clean    # Remove build artifacts
 ```
 
-## Working on a Single Component
-
-Each component has its own `Makefile`:
+Each component's tasks are also available from the root `Taskfile.yml`:
 
 ```bash
 # Backend only
-cd backend && make run   # Run backend dev server
-cd backend && make test  # Run backend tests
+task dev-backend   # Run backend dev server
+task test-backend  # Run backend tests
 
 # CLI only
-cd cli && make build     # Build CLI binary to ../bin/kanbin
-cd cli && make run       # Run CLI
+task build-cli     # Build CLI binary to bin/kanbin.exe
+task test-cli      # Run CLI tests
 
 # Frontend only
-cd frontend && npm run dev    # Vite dev server
-cd frontend && npm run build  # Production build
-cd frontend && npm run lint   # ESLint
+task dev-frontend    # Vite dev server
+task build-frontend  # Production build
+task lint-frontend   # ESLint
 ```
