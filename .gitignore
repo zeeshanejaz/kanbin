@@ -4,6 +4,7 @@
 
 # Compiled binaries / build output
 bin/
+dist/
 *.exe
 *.exe~
 *.dll

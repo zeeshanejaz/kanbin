@@ -1,0 +1,91 @@
+version: 2
+project_name: kanbin
+
+builds:
+  - id: kanbin
+    # The main package is at cli/cmd/kanbin
+    # Since we set 'dir: cli', the path is relative to that.
+    main: ./cmd/kanbin
+    dir: cli
+    binary: kanbin
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+      - "386"
+
+archives:
+  - format: tar.gz
+    # this name template makes the OS and Arch compatible with what is expected.
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    # use zip for windows archives
+    format_overrides:
+      - goos: windows
+        format: zip
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-SNAPSHOT-{{.ShortCommit}}"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+
+brews:
+  - repository:
+      owner: zeeshanejaz
+      name: homebrew-tap
+    directory: Formula
+    homepage: "https://kanbin.app"
+    description: "Lightweight, ephemeral Kanban boards for humans and AI agents."
+    license: "MIT"
+    install: |
+      bin.install "kanbin"
+      bin.install_symlink bin/"kanbin" => "kb"
+
+scoops:
+  - repository:
+      owner: zeeshanejaz
+      name: scoop-bucket
+    homepage: "https://kanbin.app"
+    description: "Lightweight, ephemeral Kanban boards for humans and AI agents."
+    license: MIT
+
+winget:
+  - name: kanbin
+    publisher: zeeshanejaz
+    publisher_url: "https://github.com/zeeshanejaz"
+    publisher_support_url: "https://github.com/zeeshanejaz/kanbin/issues"
+    package_identifier: zeeshanejaz.kanbin
+    homepage: "https://kanbin.app"
+    description: "Lightweight, ephemeral Kanban boards for humans and AI agents."
+    short_description: "Ephemeral Kanban CLI"
+    license: MIT
+    license_url: "https://github.com/zeeshanejaz/kanbin/blob/main/LICENSE"
+    copyright: "2026 Zeeshan Ejaz"
+    tags:
+      - kanban
+      - cli
+      - productivity
+    repository:
+      owner: zeeshanejaz
+      name: winget-pkgs
+    # This will create a PR to the official winget-pkgs repo or a personal fork
+    # For now, it will just generate the manifest locally in dist/ if no repo access.
+    # But configuring it here sets the foundation.

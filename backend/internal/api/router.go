@@ -32,12 +32,17 @@ func NewRouter(boardRepo domain.BoardRepository, taskRepo domain.TaskRepository)
 	r.Use(middleware.Recoverer)
 
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins: []string{"http://localhost:5173", "http://localhost:3000"},
+		AllowedOrigins: []string{"http://localhost:5173", "http://localhost:3000", "https://kanbin.app", "https://*.fly.dev"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 	}))
 
+	r.Get("/", func(w http.ResponseWriter, req *http.Request) {
+		w.Write([]byte("Kanbin API Server"))
+	})
+
 	r.Route("/api", func(mux chi.Router) {
+		mux.Get("/health", r.handleHealth)
 		mux.Post("/boards", r.handleCreateBoard)
 		mux.Get("/boards", r.handleSearchBoards)
 		mux.Get("/boards/{key}", r.handleGetBoard)

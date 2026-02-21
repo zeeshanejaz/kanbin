@@ -10,6 +10,33 @@ Lightweight, ephemeral Kanban boards for humans and AI agents. Create a board in
 | `frontend/` | React + TypeScript | Web UI |
 | `cli/` | Go | Command-line interface |
 
+## Installation
+
+### Via Homebrew (macOS/Linux)
+```bash
+brew tap zeeshanejaz/tap
+brew install kanbin
+```
+
+### Via Scoop (Windows)
+```powershell
+scoop bucket add kanbin https://github.com/zeeshanejaz/scoop-bucket
+scoop install kanbin
+```
+
+### Via Winget (Windows)
+```powershell
+winget install zeeshanejaz.kanbin
+```
+
+### Via Go
+```bash
+go install github.com/zeeshanejaz/kanbin/cli/cmd/kanbin@latest
+```
+
+### Manual Download
+Download the latest binaries for Windows, macOS, and Linux from the [GitHub Releases](https://github.com/zeeshanejaz/kanbin/releases) page.
+
 ## Quickstart
 
 ### Prerequisites
@@ -48,20 +75,34 @@ The frontend dev server starts on `http://localhost:5173` and proxies API reques
 
 ## CLI Usage
 
-Kanbin includes a command-line interface available as both `kanbin` and the shorthand `kb`. Once you run `task build`, the binaries are located in the `bin/` directory.
+Kanbin includes a command-line interface available as both `kanbin` and the shorthand `kb`. If you've installed it via a package manager or `go install`, it will be in your PATH. If you've built it from source, the binaries are located in the `bin/` directory.
 
+### Backend Server URL
+By default, the CLI connects to the production server at `https://kanbin.app/api`. You can override this in two ways:
+
+1.  **Global Flag:** Use the `--server` (or `-s`) flag.
+    ```bash
+    kb --server http://localhost:8080/api board view <KEY>
+    ```
+2.  **Environment Variable:** Set the `KANBIN_URL` variable.
+    ```bash
+    export KANBIN_URL=http://localhost:8080/api
+    kb board view <KEY>
+    ```
+
+### Basic Commands
 ```bash
 # General help
-./bin/kb --help
+kb --help
 
 # Create a new key-based anonymous board
-./bin/kb board create "My CLI Board"
+kb board create "My CLI Board"
 
 # View a board and its tasks
-./bin/kb board view <BOARD_KEY>
+kb board view <BOARD_KEY>
 
 # Add a new task to a board
-./bin/kb task add "Implement auth" --board <BOARD_KEY>
+kb task add "Implement auth" --board <BOARD_KEY>
 ```
 
 ## Documentation

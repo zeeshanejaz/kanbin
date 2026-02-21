@@ -9,11 +9,20 @@ import (
 	"os"
 )
 
+var baseURLOverride string
+
+func SetBaseURL(url string) {
+	baseURLOverride = url
+}
+
 func getBaseURL() string {
+	if baseURLOverride != "" {
+		return baseURLOverride
+	}
 	if url := os.Getenv("KANBIN_URL"); url != "" {
 		return url
 	}
-	return "http://localhost:8080/api"
+	return "https://kanbin.app/api"
 }
 
 func parseResponse(resp *http.Response, target interface{}) error {
