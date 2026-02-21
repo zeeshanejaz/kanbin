@@ -24,7 +24,7 @@ func (r *BoardRepository) Create(ctx context.Context, board *domain.Board) error
 	err := r.db.QueryRow(ctx, query,
 		board.ID, board.Key, board.Title, board.CreatedAt, board.ExpiresAt,
 	).Scan(&board.ID)
-	
+
 	if err != nil {
 		return err
 	}

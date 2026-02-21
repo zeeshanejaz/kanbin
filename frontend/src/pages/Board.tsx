@@ -62,8 +62,6 @@ export default function BoardView() {
 
     const handleTaskStatusChange = async (taskId: string, newStatus: Task['status']) => {
         if (!boardData) return;
-        const task = boardData.tasks.find(t => t.id === taskId);
-        if (!task) return;
 
         try {
             // Optimistic update
@@ -72,7 +70,8 @@ export default function BoardView() {
                 tasks: prev.tasks.map(t => t.id === taskId ? { ...t, status: newStatus } : t)
             } : null);
 
-            await api.updateTask(taskId, { ...task, status: newStatus });
+            // Only send the changed field
+            await api.updateTask(taskId, { status: newStatus });
         } catch (err) {
             console.error("Failed to update status", err);
             loadBoard(); // Revert

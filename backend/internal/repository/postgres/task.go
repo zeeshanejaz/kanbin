@@ -25,7 +25,7 @@ func (r *TaskRepository) Create(ctx context.Context, task *domain.Task) error {
 	err := r.db.QueryRow(ctx, query,
 		task.ID, task.BoardID, task.Title, task.Description, task.Status, task.Position, task.CreatedAt, task.UpdatedAt,
 	).Scan(&task.ID)
-	
+
 	return err
 }
 

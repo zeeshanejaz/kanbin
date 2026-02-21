@@ -28,10 +28,10 @@ type CreateTaskReq struct {
 }
 
 type UpdateTaskReq struct {
-	Title       string            `json:"title"`
-	Description string            `json:"description"`
-	Status      domain.TaskStatus `json:"status"`
-	Position    int               `json:"position"`
+	Title       *string            `json:"title,omitempty"`
+	Description *string            `json:"description,omitempty"`
+	Status      *domain.TaskStatus `json:"status,omitempty"`
+	Position    *int               `json:"position,omitempty"`
 }
 
 // Handlers
@@ -200,10 +200,19 @@ func (r *Router) handleUpdateTask(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	task.Title = reqBody.Title
-	task.Description = reqBody.Description
-	task.Status = reqBody.Status
-	task.Position = reqBody.Position
+	// Only update fields that are provided (partial update support)
+	if reqBody.Title != nil {
+		task.Title = *reqBody.Title
+	}
+	if reqBody.Description != nil {
+		task.Description = *reqBody.Description
+	}
+	if reqBody.Status != nil {
+		task.Status = *reqBody.Status
+	}
+	if reqBody.Position != nil {
+		task.Position = *reqBody.Position
+	}
 	task.UpdatedAt = time.Now()
 
 	if err := r.taskRepo.Update(req.Context(), task); err != nil {
