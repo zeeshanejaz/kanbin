@@ -9,6 +9,9 @@ const apiClient = axios.create({
     },
 });
 
+// ETag cache for conditional requests
+const etagCache = new Map<string, string>();
+
 export interface Task {
     id: string;
     board_id: string;
@@ -32,6 +35,9 @@ export interface BoardResponse extends Board {
     tasks: Task[];
 }
 
+// Cache for board data (used when server returns 304)
+const boardCache = new Map<string, BoardResponse>();
+
 // API Methods
 export const api = {
     createBoard: async (title: string): Promise<Board> => {
@@ -40,12 +46,45 @@ export const api = {
     },
 
     getBoard: async (key: string): Promise<BoardResponse> => {
-        const res = await apiClient.get<BoardResponse>(`/boards/${key}`);
-        return res.data;
+        const cacheKey = `board:${key}`;
+        const etag = etagCache.get(cacheKey);
+
+        try {
+            const res = await apiClient.get<BoardResponse>(`/boards/${key}`, {
+                headers: etag ? { 'If-None-Match': etag } : {},
+            });
+
+            // Store new ETag if present
+            const newETag = res.headers['etag'];
+            if (newETag) {
+                etagCache.set(cacheKey, newETag);
+            }
+
+            // Cache the response
+            boardCache.set(cacheKey, res.data);
+            
+            return res.data;
+        } catch (error) {
+            // Handle 304 Not Modified
+            if (axios.isAxiosError(error) && error.response?.status === 304) {
+                const cached = boardCache.get(cacheKey);
+                if (cached) {
+                    return cached;
+                }
+                // Fallback: retry without ETag if cache miss
+                etagCache.delete(cacheKey);
+                return api.getBoard(key);
+            }
+            throw error;
+        }
     },
 
     deleteBoard: async (key: string): Promise<void> => {
         await apiClient.delete(`/boards/${key}`);
+        // Clear cache for deleted board
+        const cacheKey = `board:${key}`;
+        etagCache.delete(cacheKey);
+        boardCache.delete(cacheKey);
     },
 
     createTask: async (boardKey: string, title: string, description: string = ''): Promise<Task> => {

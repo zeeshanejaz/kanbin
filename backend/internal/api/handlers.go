@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/your-org/kanbin/backend/internal/domain"
+	"github.com/your-org/kanbin/backend/internal/utils"
 )
 
 // DTOs
@@ -97,6 +98,24 @@ func (r *Router) handleGetBoard(w http.ResponseWriter, req *http.Request) {
 		tasks = []*domain.Task{}
 	}
 
+	// Generate ETag from board and task timestamps
+	taskTimes := make([]time.Time, len(tasks))
+	for i, task := range tasks {
+		taskTimes[i] = task.UpdatedAt
+	}
+	etag := utils.GenerateETag(board.CreatedAt, taskTimes)
+
+	// Check If-None-Match header
+	ifNoneMatch := req.Header.Get("If-None-Match")
+	if ifNoneMatch != "" && ifNoneMatch == etag {
+		// Data hasn't changed, return 304 Not Modified
+		w.Header().Set("ETag", etag)
+		w.WriteHeader(http.StatusNotModified)
+		return
+	}
+
+	// Set ETag header and return data
+	w.Header().Set("ETag", etag)
 	respondJSON(w, http.StatusOK, BoardResponse{
 		Board: board,
 		Tasks: tasks,

@@ -1,12 +1,21 @@
+import { memo } from 'react';
+import { formatDistanceToNow } from 'date-fns';
 import type { Task } from '../api/client';
 
 interface Props {
     task: Task;
-    onStatusChange: (id: string, status: Task['status']) => void;
     onDelete: (id: string) => void;
 }
 
-export default function TaskCard({ task, onStatusChange, onDelete }: Props) {
+function TaskCard({ task, onDelete }: Props) {
+    // Determine if the task has been updated (more than 1 second difference)
+    const createdTime = new Date(task.created_at).getTime();
+    const updatedTime = new Date(task.updated_at).getTime();
+    const isUpdated = (updatedTime - createdTime) > 1000;
+    
+    const timeLabel = isUpdated ? 'Updated' : 'Created';
+    const timeValue = formatDistanceToNow(new Date(isUpdated ? task.updated_at : task.created_at), { addSuffix: true });
+
     return (
         <div className="task-card">
             <div className="task-header">
@@ -16,17 +25,12 @@ export default function TaskCard({ task, onStatusChange, onDelete }: Props) {
             {task.description && <p className="task-desc">{task.description}</p>}
 
             <div className="task-footer">
-                <select
-                    value={task.status}
-                    onChange={(e) => onStatusChange(task.id, e.target.value as Task['status'])}
-                    className="status-dropdown"
-                >
-                    <option value="TODO">To Do</option>
-                    <option value="IN_PROGRESS">In Progress</option>
-                    <option value="DONE">Done</option>
-                </select>
-                <span className="task-date">{new Date(task.updated_at).toLocaleDateString()}</span>
+                <span className="task-date">
+                    <span className="task-date-label">{timeLabel}</span> {timeValue}
+                </span>
             </div>
         </div>
     );
 }
+
+export default memo(TaskCard);
