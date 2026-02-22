@@ -1,4 +1,6 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../api/client';
 import './Landing.css';
 
 export default function Landing() {
@@ -6,6 +8,11 @@ export default function Landing() {
   const heroRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const navigate = useNavigate();
+
+  const [boardName, setBoardName] = useState('');
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState('');
 
   // Navbar scroll morph
   useEffect(() => {
@@ -72,6 +79,22 @@ export default function Landing() {
     toggleRef.current?.setAttribute('aria-expanded', 'false');
   }, []);
 
+  const handleCreateBoard = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    const title = boardName.trim();
+    if (!title) return;
+
+    setCreating(true);
+    setError('');
+    try {
+      const board = await api.createBoard(title);
+      navigate(`/b/${board.key}`);
+    } catch {
+      setError('Failed to create board. Please try again.');
+      setCreating(false);
+    }
+  }, [boardName, navigate]);
+
   return (
     <div className="landing">
 
@@ -107,12 +130,34 @@ export default function Landing() {
             Built for AI agents. Readable by humans.
           </p>
           <div className="hero-actions">
-            <a href="#quickstart" className="l-btn l-btn-accent">Get Started</a>
-            <a href="#api" className="l-btn l-btn-outline">API Reference</a>
+            <form className="hero-create-form" onSubmit={handleCreateBoard}>
+              <div className="hero-input-group">
+                <input
+                  type="text"
+                  className="hero-input"
+                  placeholder="sprint-42"
+                  value={boardName}
+                  onChange={(e) => setBoardName(e.target.value)}
+                  disabled={creating}
+                  maxLength={64}
+                  aria-label="Board name"
+                />
+                <button
+                  type="submit"
+                  className="l-btn l-btn-accent hero-create-btn"
+                  disabled={creating || !boardName.trim()}
+                >
+                  {creating ? 'Creating…' : 'Create Board →'}
+                </button>
+              </div>
+              {error && <p className="hero-error">{error}</p>}
+            </form>
           </div>
+          <div className="hero-divider"><span className="mono">or via API</span></div>
           <pre className="hero-curl"><code>{`curl -X POST https://kanbin.app/api/boards \\
   -H "Content-Type: application/json" \\
   -d '{"title": "sprint-42"}'`}</code></pre>
+          <p className="hero-hint mono">No signup required — boards expire in 7 days</p>
         </div>
         <div className="hero-status">
           <span className="status-dot"></span>

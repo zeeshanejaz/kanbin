@@ -325,14 +325,96 @@
 
 .landing .hero-actions {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
   flex-wrap: wrap;
 }
 
-.landing .hero-curl {
-  max-width: 36rem;
+.landing .hero-create-form {
+  width: 100%;
+  max-width: 32rem;
+}
+
+.landing .hero-input-group {
+  display: flex;
+  gap: 0;
+  border: 2px solid var(--black);
+  border-radius: var(--l-radius);
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.landing .hero-input-group:focus-within {
+  border-color: var(--red);
+}
+
+.landing .hero-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-family: var(--l-mono);
+  font-size: 0.9rem;
+  border: none;
+  background: var(--offwhite);
+  color: var(--black);
+  outline: none;
+  min-width: 0;
+}
+
+.landing .hero-input::placeholder {
+  color: var(--black-60);
+  opacity: 0.6;
+}
+
+.landing .hero-create-btn {
+  border-radius: 0;
+  border: none;
+  border-left: 2px solid var(--black);
+  white-space: nowrap;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.landing .hero-create-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.landing .hero-error {
+  color: var(--red);
+  font-family: var(--l-mono);
   font-size: 0.78rem;
+  margin-top: 0.5rem;
+}
+
+.landing .hero-hint {
+  font-size: 0.75rem;
+  color: var(--black-60);
+  margin-bottom: 2rem;
+}
+
+.landing .hero-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 32rem;
+  margin-bottom: 1rem;
+  color: var(--black-60);
+  font-size: 0.75rem;
+}
+
+.landing .hero-divider::before,
+.landing .hero-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--black-10);
+}
+
+.landing .hero-curl {
+  max-width: 32rem;
+  font-size: 0.78rem;
+  margin-bottom: 1.5rem;
 }
 
 .landing .hero-status {
