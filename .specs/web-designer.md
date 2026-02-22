@@ -1,4 +1,5 @@
 # Cinematic Landing Page Builder
+Credit: Nick Saraev - https://www.youtube.com/watch?v=czLrUyA_Bh4
 
 ## Role
 

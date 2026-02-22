@@ -1,4 +1,4 @@
-module github.com/your-org/kanbin/cli
+module github.com/zeeshanejaz/kanbin/cli
 
 go 1.22
 

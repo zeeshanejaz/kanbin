@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/your-org/kanbin/backend/internal/domain"
+	"github.com/zeeshanejaz/kanbin/backend/internal/domain"
 )
 
 type BoardRepository struct {

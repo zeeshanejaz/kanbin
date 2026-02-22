@@ -1,4 +1,4 @@
-module github.com/your-org/kanbin/backend
+module github.com/zeeshanejaz/kanbin/backend
 
 go 1.24.0
 

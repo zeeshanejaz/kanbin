@@ -39,7 +39,7 @@ export default function Landing() {
   // Scroll reveal
   useEffect(() => {
     const targets = document.querySelectorAll(
-      '.landing .endpoint, .landing .qs-card, .landing .cli-cmd, .landing .model-card, .landing .arch-card, .landing .principle, .landing .use-case'
+      '.landing .endpoint, .landing .qs-card, .landing .cli-cmd, .landing .model-card, .landing .arch-card, .landing .principle, .landing .use-case, .landing .selfhost-step'
     );
     if (targets.length === 0) return;
 
@@ -108,7 +108,7 @@ export default function Landing() {
             <a href="#cli" onClick={closeMenu}>cli</a>
             <a href="#models" onClick={closeMenu}>models</a>
             <a href="#philosophy" onClick={closeMenu}>philosophy</a>
-            <a href="https://github.com/your-org/kanbin" className="nav-cta" target="_blank" rel="noopener">GitHub →</a>
+            <a href="https://github.com/zeeshanejaz/kanbin" className="nav-cta" target="_blank" rel="noopener">GitHub →</a>
           </div>
           <button ref={toggleRef} className="nav-toggle" aria-label="Toggle menu" aria-expanded="false" onClick={handleToggle}>
             <span></span><span></span>
@@ -292,7 +292,7 @@ curl -s https://kanbin.app/api/boards/a1b2c3d4 | jq`}</code></pre>
               <h3>Via CLI</h3>
               <p>Install the <code>kb</code> binary and manage boards from your terminal or CI pipeline.</p>
               <pre><code>{`# Install (Go required)
-go install github.com/your-org/kanbin/cli/cmd/kanbin@latest
+go install github.com/zeeshanejaz/kanbin/cli/cmd/kanbin@latest
 
 # Create a board
 kb board create "weekend-hack"
@@ -809,6 +809,60 @@ Task a1b2c3d4-... deleted.`}</code></pre>
           </div>
         </section>
 
+        {/* ── SELF-HOSTING ── */}
+        <section id="self-hosting" className="l-section">
+          <div className="section-header">
+            <span className="section-label mono">07</span>
+            <h2>Self-Hosting</h2>
+          </div>
+          <p className="selfhost-intro">
+            Run your own Kanbin instance in minutes — database, backend, and frontend all in one command.
+          </p>
+
+          <div className="selfhost-grid">
+            <div className="selfhost-step">
+              <div className="selfhost-num mono">01</div>
+              <h3>Start everything</h3>
+              <p>Clone the repo and bring up the full stack with Docker Compose. Postgres, backend API, and the web UI all start together.</p>
+              <pre className="selfhost-code"><code>{`git clone https://github.com/zeeshanejaz/kanbin
+cd kanbin
+docker compose up -d`}</code></pre>
+              <p className="selfhost-note mono">Web UI → <strong>:3000</strong> · API → <strong>:8080</strong> · DB → <strong>:5432</strong></p>
+            </div>
+
+            <div className="selfhost-step">
+              <div className="selfhost-num mono">02</div>
+              <h3>Open the board</h3>
+              <p>Navigate to your instance in the browser. The frontend proxies all <code>/api/</code> requests to the backend container automatically — no CORS config needed.</p>
+              <pre className="selfhost-code"><code>{`open http://localhost:3000`}</code></pre>
+              <p className="selfhost-note mono">Nginx handles the <code>/api/</code> → backend proxy internally.</p>
+            </div>
+
+            <div className="selfhost-step">
+              <div className="selfhost-num mono">03</div>
+              <h3>Point the CLI at your instance</h3>
+              <p>Use the <code>--server</code> flag or set <code>KANBIN_URL</code> once for the session.</p>
+              <pre className="selfhost-code"><code>{`# one-off
+kanbin --server http://localhost:8080 board list
+
+# or export once
+export KANBIN_URL=http://localhost:8080
+kanbin board create "my-sprint"
+kanbin task add <board-key> "Fix auth bug"`}</code></pre>
+              <p className="selfhost-note mono"><code>--server</code> overrides <code>KANBIN_URL</code> which overrides the built-in default.</p>
+            </div>
+          </div>
+
+          <div className="selfhost-requirements">
+            <h4 className="mono">Requirements</h4>
+            <div className="selfhost-req-grid">
+              <div className="selfhost-req"><span className="mono req-label">Docker</span><span>with Compose v2</span></div>
+              <div className="selfhost-req"><span className="mono req-label">Go</span><span>1.22+ (CLI only)</span></div>
+              <div className="selfhost-req"><span className="mono req-label">Ports</span><span>3000 · 8080 · 5432</span></div>
+            </div>
+          </div>
+        </section>
+
       </main>
 
       {/* ── FOOTER ── */}
@@ -827,9 +881,10 @@ Task a1b2c3d4-... deleted.`}</code></pre>
           </div>
           <div className="footer-col">
             <h4>Project</h4>
-            <a href="https://github.com/your-org/kanbin" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/zeeshanejaz/kanbin" target="_blank" rel="noopener">GitHub</a>
             <a href="#philosophy">Philosophy</a>
             <a href="#architecture">Architecture</a>
+            <a href="#self-hosting">Self-Hosting</a>
           </div>
           <div className="footer-status">
             <div className="status-indicator">

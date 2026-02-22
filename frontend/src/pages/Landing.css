@@ -927,6 +927,130 @@
   border-radius: var(--l-radius);
 }
 
+/* ── Self-Hosting ────────────────────────────────────── */
+
+.landing .selfhost-intro {
+  color: var(--black-60);
+  max-width: 42rem;
+  margin-bottom: 2.5rem;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.landing .selfhost-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (max-width: 900px) {
+  .landing .selfhost-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.landing .selfhost-step {
+  background: var(--white);
+  border: 1px solid var(--black-10);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.15s ease;
+}
+
+.landing .selfhost-step.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.landing .selfhost-step:hover {
+  border-color: var(--black);
+}
+
+.landing .selfhost-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--red);
+  letter-spacing: 0.08em;
+}
+
+.landing .selfhost-step h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.landing .selfhost-step > p {
+  font-size: 0.85rem;
+  color: var(--black-60);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.landing .selfhost-code {
+  background: var(--black);
+  color: var(--paper);
+  font-family: var(--l-mono);
+  font-size: 0.75rem;
+  line-height: 1.7;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.landing .selfhost-note {
+  font-size: 0.72rem;
+  color: var(--black-60);
+  margin: 0;
+}
+
+.landing .selfhost-note strong {
+  color: var(--black);
+}
+
+.landing .selfhost-requirements {
+  border-top: 1px solid var(--black-10);
+  padding-top: 1.5rem;
+}
+
+.landing .selfhost-requirements h4 {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--black-60);
+  margin-bottom: 0.75rem;
+}
+
+.landing .selfhost-req-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.landing .selfhost-req {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--offwhite);
+  border: 1px solid var(--black-10);
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+.landing .req-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--red);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
 /* ── Footer ─────────────────────────────────────────── */
 
 .landing .l-footer {

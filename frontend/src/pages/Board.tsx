@@ -36,6 +36,7 @@ export default function BoardView() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
     const [activeTask, setActiveTask] = useState<Task | null>(null);
+    const [copySuccess, setCopySuccess] = useState(false);
 
     // React Query hooks
     const { data: boardData, isLoading, error } = useBoardQuery(key);
@@ -192,6 +193,18 @@ export default function BoardView() {
         }
     }, [key, navigate]);
 
+    const handleCopyLink = useCallback(async () => {
+        if (!key) return;
+        const url = `${window.location.origin}/b/${key}`;
+        try {
+            await navigator.clipboard.writeText(url);
+            setCopySuccess(true);
+            setTimeout(() => setCopySuccess(false), 2000);
+        } catch (err) {
+            console.error("Failed to copy link", err);
+        }
+    }, [key]);
+
     // Loading state
     if (isLoading) return <div className="loader">Loading board...</div>;
     
@@ -233,6 +246,14 @@ export default function BoardView() {
                         <h1 className="board-title">{boardData.title}</h1>
                         <div className="board-meta">
                             <span>Key: <strong>{boardData.key}</strong></span>
+                            <button 
+                                className="copy-link-btn" 
+                                onClick={handleCopyLink}
+                                title={copySuccess ? "Copied!" : "Copy board link"}
+                                aria-label="Copy board link"
+                            >
+                                {copySuccess ? '✓' : '🔗'}
+                            </button>
                             <span className="divider">|</span>
                             <span>Expires: {formatDistanceToNow(new Date(boardData.expires_at), { addSuffix: true })}</span>
                         </div>

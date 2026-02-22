@@ -39,7 +39,7 @@ PORT=8080
 
 #### [NEW] `backend/go.mod`
 ```
-module github.com/your-org/kanbin/backend
+module github.com/zeeshanejaz/kanbin/backend
 
 go 1.22
 ```
@@ -112,7 +112,7 @@ server: {
 
 #### [NEW] `cli/go.mod`
 ```
-module github.com/your-org/kanbin/cli
+module github.com/zeeshanejaz/kanbin/cli
 
 go 1.22
 ```

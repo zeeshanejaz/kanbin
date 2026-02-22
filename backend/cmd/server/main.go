@@ -12,9 +12,9 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
 
-	"github.com/your-org/kanbin/backend/internal/api"
-	"github.com/your-org/kanbin/backend/internal/config"
-	"github.com/your-org/kanbin/backend/internal/repository/postgres"
+	"github.com/zeeshanejaz/kanbin/backend/internal/api"
+	"github.com/zeeshanejaz/kanbin/backend/internal/config"
+	"github.com/zeeshanejaz/kanbin/backend/internal/repository/postgres"
 )
 
 func main() {
