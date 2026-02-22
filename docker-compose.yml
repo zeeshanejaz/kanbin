@@ -13,6 +13,38 @@ services:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U kanbin -d kanbin_dev']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    container_name: kanbin-backend
+    restart: always
+    environment:
+      - PORT=8080
+      - DATABASE_URL=postgres://kanbin:kanbin@db:5432/kanbin_dev
+    ports:
+      - '8080:8080'
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: kanbin-frontend
+    restart: always
+    volumes:
+      - ./frontend/nginx.self-host.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - '3000:80'
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:

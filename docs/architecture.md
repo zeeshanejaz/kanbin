@@ -45,7 +45,7 @@ User opens browser → Frontend loads → JS fetches GET /api/boards/{key}
 
 ```
 kanbin/
-├── backend/           # Go REST API (github.com/your-org/kanbin/backend)
+├── backend/           # Go REST API (github.com/zeeshanejaz/kanbin/backend)
 │   ├── cmd/server/    # Entrypoint
 │   └── internal/      # Private packages (config, domain, handler, service, repository)
 ├── frontend/          # React + TypeScript (Vite)
@@ -53,7 +53,7 @@ kanbin/
 │       ├── api/       # Typed API client — single source of HTTP calls
 │       ├── pages/     # Route-level components
 │       └── components/# Reusable UI components
-├── cli/               # Go CLI (github.com/your-org/kanbin/cli)
+├── cli/               # Go CLI (github.com/zeeshanejaz/kanbin/cli)
 │   ├── cmd/kanbin/    # Entrypoint
 │   └── internal/      # Private packages (api client, config, output)
 └── docs/              # This documentation

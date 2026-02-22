@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/your-org/kanbin/cli/internal/client"
+	"github.com/zeeshanejaz/kanbin/cli/internal/client"
 )
 
 func main() {

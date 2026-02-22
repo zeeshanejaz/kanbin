@@ -1,23 +1,29 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Landing from './pages/Landing';
 import BoardView from './pages/Board';
 import './index.css';
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="app-container">
-        <header className="app-header">
-          <div className="logo">Kanbin</div>
-          <div className="tagline">Ephemeral Key-Based Boards</div>
-        </header>
-        <main className="app-main">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/b/:key" element={<BoardView />} />
-          </Routes>
-        </main>
-      </div>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route
+          path="/b/:key"
+          element={
+            <div className="board-shell">
+              <header className="board-nav">
+                <div className="board-nav-inner">
+                  <Link to="/" className="board-brand">kanbin<span className="brand-accent">_</span></Link>
+                </div>
+              </header>
+              <main className="board-main">
+                <BoardView />
+              </main>
+            </div>
+          }
+        />
+      </Routes>
     </BrowserRouter>
   );
 }

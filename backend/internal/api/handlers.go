@@ -8,8 +8,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 
-	"github.com/your-org/kanbin/backend/internal/domain"
-	"github.com/your-org/kanbin/backend/internal/utils"
+	"github.com/zeeshanejaz/kanbin/backend/internal/domain"
+	"github.com/zeeshanejaz/kanbin/backend/internal/utils"
 )
 
 // DTOs
