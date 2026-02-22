@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
 import { formatDistanceToNow } from 'date-fns';
@@ -30,7 +30,21 @@ const COLUMNS = [
     { id: 'DONE', title: 'Done' }
 ] as const;
 
+/** Prevent page-level scrollbars while the board is mounted */
+function useLockBodyScroll() {
+    useEffect(() => {
+        const html = document.documentElement;
+        const body = document.body;
+        html.style.overflow = 'hidden';
+        body.style.overflow = 'hidden';
+        return () => {
+            html.style.overflow = '';
+            body.style.overflow = '';
+        };
+    }, []);
+}
 export default function BoardView() {
+    useLockBodyScroll();
     const { key } = useParams<{ key: string }>();
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
