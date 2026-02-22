@@ -1,6 +1,21 @@
 # Kanbin
 
+[![Go Version](https://img.shields.io/badge/Go-1.22+-00ADD8?style=flat&logo=go)](https://go.dev)
+[![Node Version](https://img.shields.io/badge/Node-20+-339933?style=flat&logo=node.js)](https://nodejs.org)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 Lightweight, ephemeral Kanban boards for humans and AI agents. Create a board instantly — no sign-up required — share the key, and let it expire when the work is done.
+
+## ✨ Features
+
+- **🚀 Instant Setup**: No registration, no login — just create and share
+- **🔑 Key-Based Access**: Each board gets a unique access key
+- **⚡ Real-time Sync**: Updates reflect instantly across all clients
+- **🎨 Drag & Drop**: Intuitive drag-and-drop task management
+- **💻 CLI + Web**: Use the web UI or command-line interface
+- **🤖 AI-Friendly**: Perfect for AI agents tracking their own tasks
+- **📦 Self-Hostable**: Deploy on your own infrastructure
 
 ## Components
 
@@ -114,3 +129,22 @@ kb task add "Implement auth" --board <BOARD_KEY>
 ## Project Specifications
 
 See [`.specs/`](.specs/) for the project constitution, product specifications, and MVP delivery plan.
+
+## Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
+
+- Setting up your development environment
+- Code style and standards
+- Submitting pull requests
+- Reporting issues
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+- 📖 [Documentation](docs/)
+- 🐛 [Issue Tracker](https://github.com/zeeshanejaz/kanbin/issues)
+- 💬 [Discussions](https://github.com/zeeshanejaz/kanbin/discussions)
