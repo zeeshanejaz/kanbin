@@ -106,7 +106,7 @@ export default function Landing() {
             <a href="#quickstart" onClick={closeMenu}>quickstart</a>
             <a href="#api" onClick={closeMenu}>api</a>
             <a href="#cli" onClick={closeMenu}>cli</a>
-            <a href="#models" onClick={closeMenu}>models</a>
+            <a href="#self-hosting" onClick={closeMenu}>self-hosting</a>
             <a href="#philosophy" onClick={closeMenu}>philosophy</a>
             <a href="https://github.com/zeeshanejaz/kanbin" className="nav-cta" target="_blank" rel="noopener">GitHub →</a>
           </div>
