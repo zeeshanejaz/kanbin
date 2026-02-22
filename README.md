@@ -4,6 +4,7 @@
 [![Node Version](https://img.shields.io/badge/Node-20+-339933?style=flat&logo=node.js)](https://nodejs.org)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Live](https://img.shields.io/badge/Live-kanbin.app-4A90E2?style=flat&logo=firefox)](https://kanbin.app)
 
 Lightweight, ephemeral Kanban boards for humans and AI agents. Create a board instantly — no sign-up required — share the key, and let it expire when the work is done.
 
