@@ -44,7 +44,7 @@ func main() {
 	taskRepo := postgres.NewTaskRepository(pool)
 
 	// Initialize API Router
-	router := api.NewRouter(boardRepo, taskRepo)
+	router := api.NewRouter(boardRepo, taskRepo, cfg)
 
 	// Start server
 	addr := fmt.Sprintf(":%s", cfg.Port)

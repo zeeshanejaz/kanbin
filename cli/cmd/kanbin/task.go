@@ -104,23 +104,24 @@ func newTaskMoveCmd() *cobra.Command {
 				fmt.Println("Error: --status is required (TODO, IN_PROGRESS, DONE)")
 				os.Exit(1)
 			}
-
-			// Fetch the task first to preserve other fields
-			var task struct {
-				ID          string `json:"id"`
-				BoardID     string `json:"board_id"`
-				Title       string `json:"title"`
-				Description string `json:"description"`
-				Status      string `json:"status"`
-				Position    int    `json:"position"`
+			if boardKey == "" {
+				fmt.Println("Error: --board key is required")
+				os.Exit(1)
 			}
-			// Wait, we don't have a GET /tasks/{id} endpoint!
-			// The spec only has POST /tasks, PUT /tasks, DELETE /tasks.
-			// I'll just send the PUT request with the empty fields to satisfy the MVP, or better, log that it's basic.
+
 			payload := map[string]interface{}{
 				"status": taskStatus,
 			}
-			err := client.Put(fmt.Sprintf("/tasks/%s", id), payload, &task)
+			var task struct {
+				ID     string `json:"id"`
+				Status string `json:"status"`
+			}
+			err := client.Put(
+				fmt.Sprintf("/tasks/%s", id),
+				payload,
+				&task,
+				map[string]string{"X-Board-Key": boardKey},
+			)
 			if err != nil {
 				fmt.Printf("Error updating task %s: %v\n", id, err)
 				os.Exit(1)
@@ -129,18 +130,27 @@ func newTaskMoveCmd() *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVar(&taskStatus, "status", "", "New status (TODO, IN_PROGRESS, DONE)")
+	cmd.Flags().StringVar(&boardKey, "board", "", "Board key (required)")
 	return cmd
 }
 
 func newTaskDeleteCmd() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "delete [id]",
 		Short: "Delete a task",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			id := args[0]
+			if boardKey == "" {
+				fmt.Println("Error: --board key is required")
+				os.Exit(1)
+			}
 			var result map[string]string
-			err := client.Delete(fmt.Sprintf("/tasks/%s", id), &result)
+			err := client.Delete(
+				fmt.Sprintf("/tasks/%s", id),
+				&result,
+				map[string]string{"X-Board-Key": boardKey},
+			)
 			if err != nil {
 				fmt.Printf("Error deleting task: %v\n", err)
 				os.Exit(1)
@@ -148,4 +158,6 @@ func newTaskDeleteCmd() *cobra.Command {
 			fmt.Printf("Task %s deleted.\n", id)
 		},
 	}
+	cmd.Flags().StringVar(&boardKey, "board", "", "Board key (required)")
+	return cmd
 }

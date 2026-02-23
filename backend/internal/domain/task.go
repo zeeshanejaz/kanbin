@@ -19,7 +19,7 @@ const (
 // Task represents an item of work on a board.
 type Task struct {
 	ID          uuid.UUID  `json:"id"`
-	BoardID     uuid.UUID  `json:"board_id"`
+	BoardID     uuid.UUID  `json:"-"`
 	Title       string     `json:"title"`
 	Description string     `json:"description"`
 	Status      TaskStatus `json:"status"`

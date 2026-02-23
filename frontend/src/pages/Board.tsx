@@ -41,8 +41,8 @@ export default function BoardView() {
     // React Query hooks
     const { data: boardData, isLoading, error } = useBoardQuery(key);
     const createTaskMutation = useCreateTaskMutation(key || '');
-    const updateTaskMutation = useUpdateTaskMutation();
-    const deleteTaskMutation = useDeleteTaskMutation();
+    const updateTaskMutation = useUpdateTaskMutation(key || '');
+    const deleteTaskMutation = useDeleteTaskMutation(key || '');
 
     // Drag and drop sensors - pointer, touch, and keyboard
     const sensors = useSensors(

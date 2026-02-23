@@ -50,7 +50,7 @@ func parseResponse(resp *http.Response, target interface{}) error {
 	return nil
 }
 
-func doRequest(method, path string, payload interface{}, target interface{}) error {
+func doRequest(method, path string, payload interface{}, target interface{}, extraHeaders ...map[string]string) error {
 	url := getBaseURL() + path
 	var bodyReader io.Reader
 
@@ -68,6 +68,11 @@ func doRequest(method, path string, payload interface{}, target interface{}) err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
+	if len(extraHeaders) > 0 {
+		for k, v := range extraHeaders[0] {
+			req.Header.Set(k, v)
+		}
+	}
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -86,10 +91,13 @@ func Post(path string, payload interface{}, target interface{}) error {
 	return doRequest(http.MethodPost, path, payload, target)
 }
 
-func Put(path string, payload interface{}, target interface{}) error {
-	return doRequest(http.MethodPut, path, payload, target)
+// Put sends a PUT request. Pass an optional map as the last argument to include extra headers
+// (e.g. {"X-Board-Key": key} for task mutation endpoints).
+func Put(path string, payload interface{}, target interface{}, extraHeaders ...map[string]string) error {
+	return doRequest(http.MethodPut, path, payload, target, extraHeaders...)
 }
 
-func Delete(path string, target interface{}) error {
-	return doRequest(http.MethodDelete, path, nil, target)
+// Delete sends a DELETE request. Pass an optional map as the last argument to include extra headers.
+func Delete(path string, target interface{}, extraHeaders ...map[string]string) error {
+	return doRequest(http.MethodDelete, path, nil, target, extraHeaders...)
 }
