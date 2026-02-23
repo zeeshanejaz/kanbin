@@ -14,7 +14,6 @@ const etagCache = new Map<string, string>();
 
 export interface Task {
     id: string;
-    board_id: string;
     title: string;
     description: string;
     status: 'TODO' | 'IN_PROGRESS' | 'DONE';
@@ -96,12 +95,16 @@ export const api = {
         return res.data;
     },
 
-    updateTask: async (taskId: string, data: Partial<Task>): Promise<Task> => {
-        const res = await apiClient.put<Task>(`/tasks/${taskId}`, data);
+    updateTask: async (taskId: string, data: Partial<Task>, boardKey: string): Promise<Task> => {
+        const res = await apiClient.put<Task>(`/tasks/${taskId}`, data, {
+            headers: { 'X-Board-Key': boardKey },
+        });
         return res.data;
     },
 
-    deleteTask: async (taskId: string): Promise<void> => {
-        await apiClient.delete(`/tasks/${taskId}`);
+    deleteTask: async (taskId: string, boardKey: string): Promise<void> => {
+        await apiClient.delete(`/tasks/${taskId}`, {
+            headers: { 'X-Board-Key': boardKey },
+        });
     },
 };

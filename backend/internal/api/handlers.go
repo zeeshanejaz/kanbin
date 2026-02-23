@@ -3,6 +3,8 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -11,6 +13,14 @@ import (
 	"github.com/zeeshanejaz/kanbin/backend/internal/domain"
 	"github.com/zeeshanejaz/kanbin/backend/internal/utils"
 )
+
+// boardKeyRe matches valid board key strings: 8–64 lowercase hex characters.
+var boardKeyRe = regexp.MustCompile(`^[0-9a-f]{8,64}$`)
+
+// isValidStatus reports whether s is a valid TaskStatus value.
+func isValidStatus(s domain.TaskStatus) bool {
+	return s == domain.StatusTodo || s == domain.StatusInProgress || s == domain.StatusDone
+}
 
 // DTOs
 type CreateBoardReq struct {
@@ -48,6 +58,15 @@ func (r *Router) handleCreateBoard(w http.ResponseWriter, req *http.Request) {
 	var reqBody CreateBoardReq
 	if err := json.NewDecoder(req.Body).Decode(&reqBody); err != nil {
 		respondError(w, http.StatusBadRequest, "Invalid request body")
+		return
+	}
+
+	if strings.TrimSpace(reqBody.Title) == "" {
+		respondError(w, http.StatusBadRequest, "Title is required")
+		return
+	}
+	if len(reqBody.Title) > 255 {
+		respondError(w, http.StatusBadRequest, "Title must be 255 characters or fewer")
 		return
 	}
 
@@ -131,31 +150,22 @@ func (r *Router) handleDeleteBoard(w http.ResponseWriter, req *http.Request) {
 	respondJSON(w, http.StatusOK, map[string]string{"message": "deleted"})
 }
 
-func (r *Router) handleSearchBoards(w http.ResponseWriter, req *http.Request) {
-	query := req.URL.Query().Get("q")
-	if query == "" {
-		respondJSON(w, http.StatusOK, make([]*domain.Board, 0))
-		return
-	}
-
-	boards, err := r.boardRepo.Search(req.Context(), query)
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, "Search failed")
-		return
-	}
-
-	if boards == nil {
-		boards = make([]*domain.Board, 0)
-	}
-
-	respondJSON(w, http.StatusOK, boards)
-}
-
 func (r *Router) handleCreateTask(w http.ResponseWriter, req *http.Request) {
 	key := chi.URLParam(req, "key")
+	if !boardKeyRe.MatchString(key) {
+		respondError(w, http.StatusBadRequest, "Invalid board key format")
+		return
+	}
+
 	board, err := r.boardRepo.GetByKey(req.Context(), key)
 	if err != nil {
 		respondError(w, http.StatusNotFound, "Board not found")
+		return
+	}
+
+	// Check expiry
+	if time.Now().After(board.ExpiresAt) {
+		respondError(w, http.StatusGone, "Board has expired")
 		return
 	}
 
@@ -176,8 +186,24 @@ func (r *Router) handleCreateTask(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if strings.TrimSpace(reqBody.Title) == "" {
+		respondError(w, http.StatusBadRequest, "Title is required")
+		return
+	}
+	if len(reqBody.Title) > 255 {
+		respondError(w, http.StatusBadRequest, "Title must be 255 characters or fewer")
+		return
+	}
+	if len(reqBody.Description) > 10000 {
+		respondError(w, http.StatusBadRequest, "Description must be 10,000 characters or fewer")
+		return
+	}
+
 	if reqBody.Status == "" {
 		reqBody.Status = domain.StatusTodo
+	} else if !isValidStatus(reqBody.Status) {
+		respondError(w, http.StatusBadRequest, "Status must be one of: TODO, IN_PROGRESS, DONE")
+		return
 	}
 
 	task := &domain.Task{
@@ -207,26 +233,62 @@ func (r *Router) handleUpdateTask(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// Board-ownership verification: require the board key in X-Board-Key header.
+	boardKey := req.Header.Get("X-Board-Key")
+	if boardKey == "" {
+		respondError(w, http.StatusForbidden, "X-Board-Key header is required")
+		return
+	}
+
+	task, err := r.taskRepo.GetByID(req.Context(), id)
+	if err != nil {
+		// Return 403 to avoid confirming whether the task exists.
+		respondError(w, http.StatusForbidden, "Forbidden")
+		return
+	}
+
+	board, err := r.boardRepo.GetByID(req.Context(), task.BoardID)
+	if err != nil || board.Key != boardKey {
+		respondError(w, http.StatusForbidden, "Forbidden")
+		return
+	}
+
+	// Check expiry
+	if time.Now().After(board.ExpiresAt) {
+		respondError(w, http.StatusGone, "Board has expired")
+		return
+	}
+
 	var reqBody UpdateTaskReq
 	if err := json.NewDecoder(req.Body).Decode(&reqBody); err != nil {
 		respondError(w, http.StatusBadRequest, "Invalid request body")
 		return
 	}
 
-	task, err := r.taskRepo.GetByID(req.Context(), id)
-	if err != nil {
-		respondError(w, http.StatusNotFound, "Task not found")
-		return
-	}
-
 	// Only update fields that are provided (partial update support)
 	if reqBody.Title != nil {
+		if strings.TrimSpace(*reqBody.Title) == "" {
+			respondError(w, http.StatusBadRequest, "Title cannot be empty")
+			return
+		}
+		if len(*reqBody.Title) > 255 {
+			respondError(w, http.StatusBadRequest, "Title must be 255 characters or fewer")
+			return
+		}
 		task.Title = *reqBody.Title
 	}
 	if reqBody.Description != nil {
+		if len(*reqBody.Description) > 10000 {
+			respondError(w, http.StatusBadRequest, "Description must be 10,000 characters or fewer")
+			return
+		}
 		task.Description = *reqBody.Description
 	}
 	if reqBody.Status != nil {
+		if !isValidStatus(*reqBody.Status) {
+			respondError(w, http.StatusBadRequest, "Status must be one of: TODO, IN_PROGRESS, DONE")
+			return
+		}
 		task.Status = *reqBody.Status
 	}
 	if reqBody.Position != nil {
@@ -247,6 +309,32 @@ func (r *Router) handleDeleteTask(w http.ResponseWriter, req *http.Request) {
 	id, err := uuid.Parse(idStr)
 	if err != nil {
 		respondError(w, http.StatusBadRequest, "Invalid task ID format")
+		return
+	}
+
+	// Board-ownership verification: require the board key in X-Board-Key header.
+	boardKey := req.Header.Get("X-Board-Key")
+	if boardKey == "" {
+		respondError(w, http.StatusForbidden, "X-Board-Key header is required")
+		return
+	}
+
+	task, err := r.taskRepo.GetByID(req.Context(), id)
+	if err != nil {
+		// Return 403 to avoid confirming whether the task exists.
+		respondError(w, http.StatusForbidden, "Forbidden")
+		return
+	}
+
+	board, err := r.boardRepo.GetByID(req.Context(), task.BoardID)
+	if err != nil || board.Key != boardKey {
+		respondError(w, http.StatusForbidden, "Forbidden")
+		return
+	}
+
+	// Check expiry
+	if time.Now().After(board.ExpiresAt) {
+		respondError(w, http.StatusGone, "Board has expired")
 		return
 	}
 

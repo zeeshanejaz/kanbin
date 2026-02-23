@@ -24,12 +24,12 @@ export function useCreateTaskMutation(boardKey: string) {
  * Mutation hook for updating a task
  * Implements optimistic updates with automatic rollback on error
  */
-export function useUpdateTaskMutation() {
+export function useUpdateTaskMutation(boardKey: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ taskId, data }: { taskId: string; data: Partial<Task> }) => {
-      return api.updateTask(taskId, data);
+      return api.updateTask(taskId, data, boardKey);
     },
 
     // Optimistic update: immediately update cache before server responds
@@ -78,12 +78,12 @@ export function useUpdateTaskMutation() {
  * Mutation hook for deleting a task
  * Implements optimistic removal with automatic rollback on error
  */
-export function useDeleteTaskMutation() {
+export function useDeleteTaskMutation(boardKey: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (taskId: string) => {
-      return api.deleteTask(taskId);
+      return api.deleteTask(taskId, boardKey);
     },
 
     // Optimistic update: immediately remove from cache

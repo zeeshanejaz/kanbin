@@ -31,8 +31,36 @@ This project uses the `kb` CLI utility for task tracking. See **`.github/kb-work
 - Planning tasks at the start of work
 - Updating task status during development
 - Maintaining board/task IDs for AI agent reference
+- Use KB boards extensively to track implementation progress and maintain alignment with specifications.
 
 **Quick workflow**: Create board → Plan tasks → Update status as you work → Reference IDs in commits and PR
+
+## Agent Tools
+We have several tools configured in Taskfile.yml for common operations:
+
+- **setup** – Installs dependencies for backend (Go), CLI (Go), and frontend (npm)
+- **task up** – Starts Docker containers (docker compose up -d)
+- **task down** – Stops Docker containers (docker compose down)
+- **task dev** – Runs backend and frontend dev servers concurrently
+- **task dev-backend** – Runs backend server (go run ./cmd/server/)
+- **task dev-frontend** – Runs frontend dev server (npm run dev)
+- **task build** – Builds backend, CLI, and frontend
+- **task build-backend** – Compiles backend binary to bin/server.exe
+- **task build-cli** – Compiles CLI binaries (kanbin.exe, kb.exe)
+- **task build-frontend** – Builds frontend production bundle
+- **task install-cli** – Installs CLI globally via go install
+- **task test** – Runs all tests
+- **task test-backend** – Runs Go backend tests
+- **task test-cli** – Runs Go CLI tests
+- **task test-frontend** – Runs frontend tests
+- **task lint** – Lints all components
+- **task lint-backend** – Runs golangci-lint on backend
+- **task lint-cli** – Runs golangci-lint on CLI
+- **task lint-frontend** – Runs frontend linter
+- **task clean** – Removes build artifacts (bin/, frontend/dist/)
+- **task release-cli** – Releases CLI using GoReleaser
+- **task release-api** – Deploys backend to Fly.io
+- **task release-app** – Deploys frontend to Fly.io
 
 # Custom Commands
 

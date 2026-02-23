@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/zeeshanejaz/kanbin/backend/internal/domain"
 )
@@ -47,35 +48,26 @@ func (r *BoardRepository) GetByKey(ctx context.Context, key string) (*domain.Boa
 	return board, nil
 }
 
+func (r *BoardRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.Board, error) {
+	query := `
+		SELECT id, key, title, created_at, expires_at
+		FROM boards
+		WHERE id = $1
+	`
+	board := &domain.Board{}
+	err := r.db.QueryRow(ctx, query, id).Scan(
+		&board.ID, &board.Key, &board.Title, &board.CreatedAt, &board.ExpiresAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return board, nil
+}
+
 func (r *BoardRepository) DeleteByKey(ctx context.Context, key string) error {
 	query := `DELETE FROM boards WHERE key = $1`
 	_, err := r.db.Exec(ctx, query, key)
 	return err
 }
 
-func (r *BoardRepository) Search(ctx context.Context, query string) ([]*domain.Board, error) {
-	sqlQuery := `
-		SELECT id, key, title, created_at, expires_at
-		FROM boards
-		WHERE title ILIKE $1
-		ORDER BY created_at DESC
-		LIMIT 50
-	`
-	rows, err := r.db.Query(ctx, sqlQuery, "%"+query+"%")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
 
-	var boards []*domain.Board
-	for rows.Next() {
-		board := &domain.Board{}
-		if err := rows.Scan(
-			&board.ID, &board.Key, &board.Title, &board.CreatedAt, &board.ExpiresAt,
-		); err != nil {
-			return nil, err
-		}
-		boards = append(boards, board)
-	}
-	return boards, rows.Err()
-}
