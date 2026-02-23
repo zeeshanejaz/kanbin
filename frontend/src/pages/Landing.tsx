@@ -280,7 +280,7 @@ curl -s -X POST https://kanbin.app/api/boards/a1b2c3d4/tasks \\
   -d '{"title": "Implement auth", "status": "TODO"}'
 
 # 3. Move task to IN_PROGRESS
-curl -s -X PUT https://kanbin.app/api/tasks/{task-id} \\
+curl -s -X PUT https://kanbin.app/api/boards/<your-board-key>/tasks/{task-id} \\
   -H "Content-Type: application/json" \\
   -d '{"status": "IN_PROGRESS"}'
 
@@ -325,9 +325,9 @@ kb board view f9e8d7c6
 You have access to a Kanbin board at https://kanbin.app/api/boards/a1b2c3d4
 Use it to track your progress. Available statuses: TODO, IN_PROGRESS, DONE
 
-POST /api/boards/{key}/tasks   → Create a task
-PUT  /api/tasks/{id}            → Update status, title, description, position
-GET  /api/boards/{key}          → View all tasks on the board
+POST /api/boards/{key}/tasks          → Create a task
+PUT  /api/boards/{key}/tasks/{id}     → Update status, title, description, position
+GET  /api/boards/{key}                → View all tasks on the board
 
 # The human opens the board URL in a browser and sees
 # the agent's progress in real time. No polling needed
@@ -432,26 +432,7 @@ If-None-Match: "etag-value"  →  304 Not Modified`}</code></pre>
             </details>
           </article>
 
-          {/* Search Boards */}
-          <article className="endpoint">
-            <div className="endpoint-header">
-              <span className="method method-get">GET</span>
-              <code className="endpoint-path">/api/boards?q=&#123;query&#125;</code>
-            </div>
-            <p>Search boards by title. Returns an empty array if no query is provided.</p>
-            <details>
-              <summary>Response <code>200</code></summary>
-              <pre><code>{`[
-  {
-    "id": "uuid",
-    "key": "a1b2c3d4",
-    "title": "my-sprint",
-    "created_at": "...",
-    "expires_at": "..."
-  }
-]`}</code></pre>
-            </details>
-          </article>
+
 
           {/* Delete Board */}
           <article className="endpoint">
@@ -509,11 +490,12 @@ If-None-Match: "etag-value"  →  304 Not Modified`}</code></pre>
           <article className="endpoint">
             <div className="endpoint-header">
               <span className="method method-put">PUT</span>
-              <code className="endpoint-path">/api/tasks/&#123;id&#125;</code>
+              <code className="endpoint-path">/api/boards/&#123;key&#125;/tasks/&#123;id&#125;</code>
             </div>
             <p>
               Partial update. Send only the fields you want to change.
               Accepts <code>title</code>, <code>description</code>, <code>status</code>, <code>position</code>.
+              The board key in the path proves ownership — returns <code>403</code> if it doesn’t match the task’s board.
             </p>
             <details>
               <summary>Request body (all fields optional)</summary>
@@ -543,9 +525,12 @@ If-None-Match: "etag-value"  →  304 Not Modified`}</code></pre>
           <article className="endpoint">
             <div className="endpoint-header">
               <span className="method method-delete">DELETE</span>
-              <code className="endpoint-path">/api/tasks/&#123;id&#125;</code>
+              <code className="endpoint-path">/api/boards/&#123;key&#125;/tasks/&#123;id&#125;</code>
             </div>
-            <p>Delete a single task by UUID.</p>
+            <p>
+              Delete a single task by UUID.
+              The board key in the path proves ownership — returns <code>403</code> if it doesn’t match the task’s board.
+            </p>
             <details>
               <summary>Response <code>200</code></summary>
               <pre><code>{`{"message": "deleted"}`}</code></pre>
@@ -556,11 +541,14 @@ If-None-Match: "etag-value"  →  304 Not Modified`}</code></pre>
           <article className="endpoint endpoint-note">
             <h3>Error Format</h3>
             <p>All errors return a JSON object with a single <code>error</code> key:</p>
-            <pre><code>{`{"error": "Board not found"}        // 404
-{"error": "Board has expired"}      // 410
-{"error": "Invalid request body"}   // 400
-{"error": "Invalid task ID format"} // 400
-{"error": "Task limit reached (100)"} // 422`}</code></pre>
+            <pre><code>{`{"error": "Board not found"}                     // 404
+{"error": "Board has expired"}                   // 410
+{"error": "Invalid request body"}                // 400
+{"error": "Invalid task ID format"}              // 400
+{"error": "Task limit reached (100)"}            // 422
+{"error": "Forbidden"}                           // 403 — wrong board key in path
+{"error": "Rate limit exceeded — try again later"} // 429`}</code></pre>
+            <p>Rate-limited responses also include a <code>Retry-After: 60</code> header.</p>
           </article>
         </section>
 
@@ -666,7 +654,7 @@ Task a1b2c3d4-... deleted.`}</code></pre>
                 </thead>
                 <tbody>
                   <tr><td><code>id</code></td><td><code>uuid</code></td><td>Unique identifier</td></tr>
-                  <tr><td><code>key</code></td><td><code>string</code></td><td>8-char hex slug for sharing</td></tr>
+                  <tr><td><code>key</code></td><td><code>string</code></td><td>32-char hex key for sharing and task ownership</td></tr>
                   <tr><td><code>title</code></td><td><code>string</code></td><td>Board name</td></tr>
                   <tr><td><code>created_at</code></td><td><code>datetime</code></td><td>ISO 8601 creation timestamp</td></tr>
                   <tr><td><code>expires_at</code></td><td><code>datetime</code></td><td>Auto-expiry, default +7 days</td></tr>

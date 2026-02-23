@@ -32,11 +32,11 @@ kb board create "Feature 123: User Authentication"
 
 # Output example:
 # Board created successfully!
-# Board Key: BOARD-abc123
-# Board ID: 550e8400-e29b-41d4-a716-446655440000
+# Title: Feature 123: User Authentication
+# Key:   a1b2c3d4e5f67890abcdef1234567890
 ```
 
-**💡 Important**: Save the **Board Key** and **Board ID** - you'll reference these throughout development.
+**💡 Important**: Save the **Board Key** — you'll reference it throughout development.
 
 ### 2. Planning Stage: Create Tasks
 
@@ -44,11 +44,11 @@ Before coding, break down your work into tasks:
 
 ```bash
 # Create tasks for your board
-kb task add "Set up database schema for users" --board BOARD-abc123
-kb task add "Implement password hashing utility" --board BOARD-abc123
-kb task add "Create user registration endpoint" --board BOARD-abc123
-kb task add "Add authentication middleware" --board BOARD-abc123
-kb task add "Write unit tests for auth flow" --board BOARD-abc123
+kb task add "Set up database schema for users" --board a1b2c3d4e5f67890abcdef1234567890
+kb task add "Implement password hashing utility" --board a1b2c3d4e5f67890abcdef1234567890
+kb task add "Create user registration endpoint" --board a1b2c3d4e5f67890abcdef1234567890
+kb task add "Add authentication middleware" --board a1b2c3d4e5f67890abcdef1234567890
+kb task add "Write unit tests for auth flow" --board a1b2c3d4e5f67890abcdef1234567890
 
 # Each task returns:
 # Task created successfully!
@@ -63,13 +63,13 @@ As you work, update task status to reflect progress:
 
 ```bash
 # Mark task as in-progress when you start
-kb task move <TASK-ID> --status IN_PROGRESS
+kb task move <TASK-ID> --status IN_PROGRESS --board <BOARD-KEY>
 
 # Mark as complete when done
-kb task move <TASK-ID> --status DONE
+kb task move <TASK-ID> --status DONE --board <BOARD-KEY>
 
 # View current board state
-kb board view BOARD-abc123
+kb board view <BOARD-KEY>
 ```
 
 ### 4. Reference Format for AI Agents
@@ -80,8 +80,7 @@ Keep this information accessible in your workspace:
 ## Current Work Context
 
 **Branch**: feature/123-add-user-auth
-**Board Key**: BOARD-abc123
-**Board ID**: 550e8400-e29b-41d4-a716-446655440000
+**Board Key**: a1b2c3d4e5f67890abcdef1234567890
 
 **Tasks**:
 - [ ] Set up database schema (660e8400-e29b-41d4-a716-446655440001) - TODO
@@ -122,13 +121,13 @@ kb board delete <BOARD-KEY>
 kb task add "<task-title>" --board <BOARD-KEY>
 
 # Update task status
-kb task move <TASK-ID> --status <TODO|IN_PROGRESS|DONE>
+kb task move <TASK-ID> --status <TODO|IN_PROGRESS|DONE> --board <BOARD-KEY>
 
 # List all tasks on a board
 kb task list --board <BOARD-KEY>
 
 # Delete a task
-kb task delete <TASK-ID>
+kb task delete <TASK-ID> --board <BOARD-KEY>
 ```
 
 ## Integration with AI Agents
@@ -139,7 +138,7 @@ When working with AI coding assistants (like GitHub Copilot), provide your board
 
 ```markdown
 I'm working on feature branch `feature/123-add-user-auth`.
-Board Key: BOARD-abc123
+Board Key: a1b2c3d4e5f67890abcdef1234567890
 
 Current tasks:
 - Database schema setup (TASK-001) - Done ✓
@@ -187,32 +186,32 @@ git checkout -b feature/456-task-filtering
 
 # 2. Create board
 kb board create "Feature 456: Task Filtering"
-# Save: BOARD-xyz789
+# Save key, e.g.: f9e8d7c6b5a4321098765432fedcba01
 
 # 3. Plan tasks
-kb task create BOARD-xyz789 "Add filter UI component"            # TASK-A1
-kb task create BOARD-xyz789 "Implement backend filter logic"     # TASK-A2
-kb task create BOARD-xyz789 "Add filter query parameters"        # TASK-A3
-kb task create BOARD-xyz789 "Write integration tests"            # TASK-A4
+kb task add "Add filter UI component" --board f9e8d7c6b5a4321098765432fedcba01            # TASK-A1
+kb task add "Implement backend filter logic" --board f9e8d7c6b5a4321098765432fedcba01     # TASK-A2
+kb task add "Add filter query parameters" --board f9e8d7c6b5a4321098765432fedcba01        # TASK-A3
+kb task add "Write integration tests" --board f9e8d7c6b5a4321098765432fedcba01            # TASK-A4
 
 # 4. Start work on first task
-kb task update TASK-A1 --status in-progress
+kb task move TASK-A1 --status IN_PROGRESS --board f9e8d7c6b5a4321098765432fedcba01
 
 # ... implement filter UI ...
 
 # 5. Complete first task
-kb task update TASK-A1 --status done
+kb task move TASK-A1 --status DONE --board f9e8d7c6b5a4321098765432fedcba01
 
 # 6. Start next task
-kb task update TASK-A2 --status in-progress
+kb task move TASK-A2 --status IN_PROGRESS --board f9e8d7c6b5a4321098765432fedcba01
 
 # ... continue until all tasks done ...
 
 # 7. View final board state before PR
-kb board view BOARD-xyz789
+kb board view f9e8d7c6b5a4321098765432fedcba01
 
 # 8. After PR merged, clean up
-kb board delete BOARD-xyz789
+kb board delete f9e8d7c6b5a4321098765432fedcba01
 ```
 
 ## Tips for Maximum Effectiveness
@@ -239,12 +238,6 @@ kb board list  # Shows all boards with their keys
 **Forgot task IDs?**
 ```bash
 kb board view <BOARD-KEY>  # Lists all tasks with IDs
-```
-
-**Need to rename a board?**
-```bash
-# Currently: delete and recreate with correct name
-# Future: kb board update command
 ```
 
 ## Integration with Project Workflows

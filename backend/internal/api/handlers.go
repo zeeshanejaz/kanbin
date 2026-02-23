@@ -233,10 +233,10 @@ func (r *Router) handleUpdateTask(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Board-ownership verification: require the board key in X-Board-Key header.
-	boardKey := req.Header.Get("X-Board-Key")
-	if boardKey == "" {
-		respondError(w, http.StatusForbidden, "X-Board-Key header is required")
+	// Board-ownership verification: board key is in the URL path.
+	boardKey := chi.URLParam(req, "key")
+	if !boardKeyRe.MatchString(boardKey) {
+		respondError(w, http.StatusBadRequest, "Invalid board key format")
 		return
 	}
 
@@ -312,10 +312,10 @@ func (r *Router) handleDeleteTask(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Board-ownership verification: require the board key in X-Board-Key header.
-	boardKey := req.Header.Get("X-Board-Key")
-	if boardKey == "" {
-		respondError(w, http.StatusForbidden, "X-Board-Key header is required")
+	// Board-ownership verification: board key is in the URL path.
+	boardKey := chi.URLParam(req, "key")
+	if !boardKeyRe.MatchString(boardKey) {
+		respondError(w, http.StatusBadRequest, "Invalid board key format")
 		return
 	}
 
