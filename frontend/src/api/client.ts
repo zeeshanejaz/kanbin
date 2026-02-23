@@ -96,15 +96,11 @@ export const api = {
     },
 
     updateTask: async (taskId: string, data: Partial<Task>, boardKey: string): Promise<Task> => {
-        const res = await apiClient.put<Task>(`/tasks/${taskId}`, data, {
-            headers: { 'X-Board-Key': boardKey },
-        });
+        const res = await apiClient.put<Task>(`/boards/${boardKey}/tasks/${taskId}`, data);
         return res.data;
     },
 
     deleteTask: async (taskId: string, boardKey: string): Promise<void> => {
-        await apiClient.delete(`/tasks/${taskId}`, {
-            headers: { 'X-Board-Key': boardKey },
-        });
+        await apiClient.delete(`/boards/${boardKey}/tasks/${taskId}`);
     },
 };

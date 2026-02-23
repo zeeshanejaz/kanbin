@@ -49,9 +49,18 @@ cp .env.example .env
 Edit `.env` with your local values. Defaults for a fresh Docker-based setup:
 
 ```env
-DATABASE_URL=postgres://kanbin:kanbin@localhost:5432/kanbin_dev
+DATABASE_URL=postgres://kanbin:kanbin_dev_pw_2026!@localhost:5432/kanbin_dev
 PORT=8080
 ```
+
+> **Note:** `DATABASE_URL` is required — the backend will exit immediately if it is not set. The password above matches the one used by `task up` (Docker Compose).
+
+**Optional environment variables:**
+
+| Variable | Default | Description |
+|---|---|---|
+| `ALLOWED_ORIGINS` | `http://localhost:5173,http://localhost:3000` | Comma-separated list of CORS-allowed origins. Set this to your frontend domain in production. |
+| `PRODUCTION` | *(unset)* | Set to `true` to enable HSTS (`Strict-Transport-Security`) response headers. |
 
 ### 3. Start infrastructure
 

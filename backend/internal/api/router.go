@@ -35,7 +35,7 @@ func NewRouter(boardRepo domain.BoardRepository, taskRepo domain.TaskRepository,
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: cfg.AllowedOrigins,
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token", "X-Board-Key"},
+		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders: []string{"ETag"},
 	}))
 
@@ -56,10 +56,10 @@ func NewRouter(boardRepo domain.BoardRepository, taskRepo domain.TaskRepository,
 		mux.With(RateLimit("boardGet")).Get("/boards/{key}", r.handleGetBoard)
 		mux.Delete("/boards/{key}", r.handleDeleteBoard)
 
-		// Task routes
+		// Task routes — board key in path provides ownership proof
 		mux.Post("/boards/{key}/tasks", r.handleCreateTask)
-		mux.Put("/tasks/{id}", r.handleUpdateTask)
-		mux.Delete("/tasks/{id}", r.handleDeleteTask)
+		mux.Put("/boards/{key}/tasks/{id}", r.handleUpdateTask)
+		mux.Delete("/boards/{key}/tasks/{id}", r.handleDeleteTask)
 	})
 
 	return r

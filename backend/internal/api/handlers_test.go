@@ -311,26 +311,12 @@ func TestCreateTask_InvalidBoardKeyFormat_Returns400(t *testing.T) {
 
 // ─── Board-ownership check ───────────────────────────────────────────────────
 
-func TestUpdateTask_NoBoardKey_Returns403(t *testing.T) {
-	r, br, tr := newTestRouter()
-	board := seedBoard(br, testKey, false)
-	task := seedTask(tr, board.ID)
-	req := httptest.NewRequest(http.MethodPut, "/api/tasks/"+task.ID.String(), strings.NewReader(`{"status":"DONE"}`))
-	req.Header.Set("Content-Type", "application/json")
-	rr := httptest.NewRecorder()
-	r.ServeHTTP(rr, req)
-	if rr.Code != http.StatusForbidden {
-		t.Errorf("expected 403, got %d", rr.Code)
-	}
-}
-
 func TestUpdateTask_WrongBoardKey_Returns403(t *testing.T) {
 	r, br, tr := newTestRouter()
 	board := seedBoard(br, testKey, false)
 	task := seedTask(tr, board.ID)
-	req := httptest.NewRequest(http.MethodPut, "/api/tasks/"+task.ID.String(), strings.NewReader(`{"status":"DONE"}`))
+	req := httptest.NewRequest(http.MethodPut, "/api/boards/0000000000000000/tasks/"+task.ID.String(), strings.NewReader(`{"status":"DONE"}`))
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Board-Key", "0000000000000000") // wrong key
 	rr := httptest.NewRecorder()
 	r.ServeHTTP(rr, req)
 	if rr.Code != http.StatusForbidden {
@@ -342,9 +328,8 @@ func TestUpdateTask_CorrectBoardKey_Returns200(t *testing.T) {
 	r, br, tr := newTestRouter()
 	board := seedBoard(br, testKey, false)
 	task := seedTask(tr, board.ID)
-	req := httptest.NewRequest(http.MethodPut, "/api/tasks/"+task.ID.String(), strings.NewReader(`{"status":"DONE"}`))
+	req := httptest.NewRequest(http.MethodPut, "/api/boards/"+testKey+"/tasks/"+task.ID.String(), strings.NewReader(`{"status":"DONE"}`))
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Board-Key", testKey)
 	rr := httptest.NewRecorder()
 	r.ServeHTTP(rr, req)
 	if rr.Code != http.StatusOK {
@@ -352,24 +337,11 @@ func TestUpdateTask_CorrectBoardKey_Returns200(t *testing.T) {
 	}
 }
 
-func TestDeleteTask_NoBoardKey_Returns403(t *testing.T) {
-	r, br, tr := newTestRouter()
-	board := seedBoard(br, testKey, false)
-	task := seedTask(tr, board.ID)
-	req := httptest.NewRequest(http.MethodDelete, "/api/tasks/"+task.ID.String(), nil)
-	rr := httptest.NewRecorder()
-	r.ServeHTTP(rr, req)
-	if rr.Code != http.StatusForbidden {
-		t.Errorf("expected 403, got %d", rr.Code)
-	}
-}
-
 func TestDeleteTask_WrongBoardKey_Returns403(t *testing.T) {
 	r, br, tr := newTestRouter()
 	board := seedBoard(br, testKey, false)
 	task := seedTask(tr, board.ID)
-	req := httptest.NewRequest(http.MethodDelete, "/api/tasks/"+task.ID.String(), nil)
-	req.Header.Set("X-Board-Key", "0000000000000000")
+	req := httptest.NewRequest(http.MethodDelete, "/api/boards/0000000000000000/tasks/"+task.ID.String(), nil)
 	rr := httptest.NewRecorder()
 	r.ServeHTTP(rr, req)
 	if rr.Code != http.StatusForbidden {
@@ -381,8 +353,7 @@ func TestDeleteTask_CorrectBoardKey_Returns200(t *testing.T) {
 	r, br, tr := newTestRouter()
 	board := seedBoard(br, testKey, false)
 	task := seedTask(tr, board.ID)
-	req := httptest.NewRequest(http.MethodDelete, "/api/tasks/"+task.ID.String(), nil)
-	req.Header.Set("X-Board-Key", testKey)
+	req := httptest.NewRequest(http.MethodDelete, "/api/boards/"+testKey+"/tasks/"+task.ID.String(), nil)
 	rr := httptest.NewRecorder()
 	r.ServeHTTP(rr, req)
 	if rr.Code != http.StatusOK {
@@ -395,9 +366,8 @@ func TestDeleteTask_DifferentBoard_Returns403(t *testing.T) {
 	boardA := seedBoard(br, testKey, false)
 	seedBoard(br, "bbbbbbbbbbbbbbbb", false)
 	task := seedTask(tr, boardA.ID)
-	// Try to delete task from board A using board B's key
-	req := httptest.NewRequest(http.MethodDelete, "/api/tasks/"+task.ID.String(), nil)
-	req.Header.Set("X-Board-Key", "bbbbbbbbbbbbbbbb")
+	// Try to delete task from board A using board B's key in the path
+	req := httptest.NewRequest(http.MethodDelete, "/api/boards/bbbbbbbbbbbbbbbb/tasks/"+task.ID.String(), nil)
 	rr := httptest.NewRecorder()
 	r.ServeHTTP(rr, req)
 	if rr.Code != http.StatusForbidden {
@@ -423,9 +393,8 @@ func TestUpdateTask_ExpiredBoard_Returns410(t *testing.T) {
 	r, br, tr := newTestRouter()
 	board := seedBoard(br, testKey, true)
 	task := seedTask(tr, board.ID)
-	req := httptest.NewRequest(http.MethodPut, "/api/tasks/"+task.ID.String(), strings.NewReader(`{"status":"DONE"}`))
+	req := httptest.NewRequest(http.MethodPut, "/api/boards/"+testKey+"/tasks/"+task.ID.String(), strings.NewReader(`{"status":"DONE"}`))
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Board-Key", testKey)
 	rr := httptest.NewRecorder()
 	r.ServeHTTP(rr, req)
 	if rr.Code != http.StatusGone {
@@ -437,8 +406,7 @@ func TestDeleteTask_ExpiredBoard_Returns410(t *testing.T) {
 	r, br, tr := newTestRouter()
 	board := seedBoard(br, testKey, true)
 	task := seedTask(tr, board.ID)
-	req := httptest.NewRequest(http.MethodDelete, "/api/tasks/"+task.ID.String(), nil)
-	req.Header.Set("X-Board-Key", testKey)
+	req := httptest.NewRequest(http.MethodDelete, "/api/boards/"+testKey+"/tasks/"+task.ID.String(), nil)
 	rr := httptest.NewRecorder()
 	r.ServeHTTP(rr, req)
 	if rr.Code != http.StatusGone {

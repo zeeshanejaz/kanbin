@@ -117,10 +117,9 @@ func newTaskMoveCmd() *cobra.Command {
 				Status string `json:"status"`
 			}
 			err := client.Put(
-				fmt.Sprintf("/tasks/%s", id),
+				fmt.Sprintf("/boards/%s/tasks/%s", boardKey, id),
 				payload,
 				&task,
-				map[string]string{"X-Board-Key": boardKey},
 			)
 			if err != nil {
 				fmt.Printf("Error updating task %s: %v\n", id, err)
@@ -147,9 +146,8 @@ func newTaskDeleteCmd() *cobra.Command {
 			}
 			var result map[string]string
 			err := client.Delete(
-				fmt.Sprintf("/tasks/%s", id),
+				fmt.Sprintf("/boards/%s/tasks/%s", boardKey, id),
 				&result,
-				map[string]string{"X-Board-Key": boardKey},
 			)
 			if err != nil {
 				fmt.Printf("Error deleting task: %v\n", err)
