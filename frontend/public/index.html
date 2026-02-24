@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kanbin — Ephemeral Kanban for the Agentic Era</title>
+  <meta name="description" content="Disposable Kanban boards with a REST API, CLI, and web UI. No signup. No configuration. Boards expire in 7 days. Built for AI agents. Readable by humans." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@1&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/landing.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-family: 'Space Grotesk', system-ui, sans-serif; background: #F5F3EE; color: #111; -webkit-font-smoothing: antialiased; }
+    body { min-height: 100vh; }
+  </style>
+</head>
+<body>
+<div class="landing">
+
+  <!-- ── NAVBAR ── -->
+  <nav id="l-navbar" class="l-navbar" aria-label="Primary navigation">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand" aria-label="Kanbin home">kanbin<span class="accent">_</span></a>
+      <div id="nav-links" class="nav-links">
+        <a href="#quickstart" onclick="closeMenu()">quickstart</a>
+        <a href="#api" onclick="closeMenu()">api</a>
+        <a href="#cli" onclick="closeMenu()">cli</a>
+        <a href="#self-hosting" onclick="closeMenu()">self-hosting</a>
+        <a href="#philosophy" onclick="closeMenu()">philosophy</a>
+        <a href="https://github.com/zeeshanejaz/kanbin" class="nav-cta" target="_blank" rel="noopener">GitHub →</a>
+      </div>
+      <button id="nav-toggle" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" onclick="toggleMenu()">
+        <span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <header id="l-hero" class="l-hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Ephemeral Kanban for the agentic era</p>
+      <h1>
+        <span class="hero-sans">Show your work</span><br>
+        <span class="hero-serif">to your humans.</span>
+      </h1>
+      <p class="hero-sub">
+        Disposable Kanban boards with a REST API, CLI, and web UI.<br>
+        No signup. No configuration. Boards expire in 7 days.<br>
+        Built for AI agents. Readable by humans.
+      </p>
+      <div class="hero-actions">
+        <form class="hero-create-form" id="create-board-form" onsubmit="handleCreateBoard(event)">
+          <div class="hero-input-group">
+            <input
+              type="text"
+              id="board-name-input"
+              class="hero-input"
+              placeholder="sprint-42"
+              maxlength="64"
+              aria-label="Board name"
+              required
+            />
+            <button type="submit" id="create-board-btn" class="l-btn l-btn-accent hero-create-btn">
+              Create Board →
+            </button>
+          </div>
+          <p id="hero-error" class="hero-error" style="display:none"></p>
+        </form>
+      </div>
+      <div class="hero-divider"><span class="mono">or via API</span></div>
+      <pre class="hero-curl"><code>curl -X POST https://kanbin.app/api/boards \
+  -H "Content-Type: application/json" \
+  -d '{"title": "sprint-42"}'</code></pre>
+      <p class="hero-hint mono">No signup required — boards expire in 7 days</p>
+    </div>
+    <div class="hero-status">
+      <span class="status-dot"></span>
+      <span class="mono">v1.0.0 — system operational</span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ── USE CASES ── -->
+    <section id="use-cases" class="l-section-dark l-section-usecases">
+      <div class="section-header">
+        <span class="section-label mono">00</span>
+        <h2>The Problem</h2>
+      </div>
+
+      <div class="usecases-intro">
+        <p class="usecases-lede">
+          Your agents are shipping code at machine speed.<br>
+          <span class="accent-text">You can't read fast enough.</span>
+        </p>
+        <p class="usecases-sub">
+          Thought tokens vanish in milliseconds. Console output scrolls past before your eyes can focus.
+          Three agents refactoring the same service, and all you see is a wall of text moving at 200 lines per second.
+          You didn't lose control — you never had visibility in the first place.
+        </p>
+      </div>
+
+      <div class="usecases-grid">
+        <article class="use-case">
+          <div class="usecase-icon mono">[01]</div>
+          <h3>Multi-agent code sprints</h3>
+          <p>
+            Four agents tearing through a monolith migration — modules decomposed, tests rewritten,
+            APIs versioned — all in parallel. The terminal becomes noise. A Kanbin board becomes
+            a live war room: what's done, what's in flight, what's blocked. Glance at it. Breathe.
+          </p>
+        </article>
+
+        <article class="use-case">
+          <div class="usecase-icon mono">[02]</div>
+          <h3>Autonomous CI/CD pipelines</h3>
+          <p>
+            Your deployment agent runs 14 steps: lint, test, build, scan, provision, migrate, deploy,
+            smoke-test, rollback-check… You get a Slack message saying "done" — but <em>which</em> steps
+            ran? A board gives each step a card. Watch them flip from TODO to DONE in real time.
+          </p>
+        </article>
+
+        <article class="use-case">
+          <div class="usecase-icon mono">[03]</div>
+          <h3>Research &amp; retrieval agents</h3>
+          <p>
+            A RAG agent crawling documentation, indexing endpoints, summarizing changelogs.
+            Thousands of thought tokens spent reasoning about what to fetch next — invisible to you.
+            Give it a board. Now you see the agent <em>thinking</em>, not just the final answer.
+          </p>
+        </article>
+
+        <article class="use-case">
+          <div class="usecase-icon mono">[04]</div>
+          <h3>Human-in-the-loop checkpoints</h3>
+          <p>
+            Not every decision should be autonomous. When an agent hits a judgment call — delete
+            the legacy table? merge the conflicting schema? — it creates a task and waits. You see
+            it on the board. You decide. The agent resumes. Supervision without the surveillance.
+          </p>
+        </article>
+
+        <article class="use-case">
+          <div class="usecase-icon mono">[05]</div>
+          <h3>Hackathons &amp; throwaway sprints</h3>
+          <p>
+            48-hour build. No time to configure Jira. No patience for Linear onboarding.
+            POST a board, hand the key to your team (or your agents), and start shipping.
+            When the weekend's over, the board expires. Zero cleanup. Zero guilt.
+          </p>
+        </article>
+
+        <article class="use-case">
+          <div class="usecase-icon mono">[06]</div>
+          <h3>Teaching agents accountability</h3>
+          <p>
+            System prompt: "Before you write code, create a task. Before you move on, mark it done."
+            Now every agent interaction produces a visible artifact. You stop asking "what did you do?"
+            and start watching work move across columns — like it should.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── QUICKSTART ── -->
+    <section id="quickstart" class="l-section">
+      <div class="section-header">
+        <span class="section-label mono">01</span>
+        <h2>Quickstart</h2>
+      </div>
+
+      <div class="quickstart-grid">
+        <article class="qs-card">
+          <h3>Via REST API</h3>
+          <p>Create a board and add tasks with plain HTTP. No auth required.</p>
+          <pre><code># 1. Create a board
+curl -s -X POST https://kanbin.app/api/boards \
+  -H "Content-Type: application/json" \
+  -d '{"title": "my-sprint"}' | jq
+
+# Response:
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "key": "a1b2c3d4",
+#   "title": "my-sprint",
+#   "created_at": "2026-02-22T10:00:00Z",
+#   "expires_at": "2026-03-01T10:00:00Z"
+# }
+
+# 2. Add a task
+curl -s -X POST https://kanbin.app/api/boards/a1b2c3d4/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Implement auth", "status": "TODO"}'
+
+# 3. Move task to IN_PROGRESS
+curl -s -X PUT https://kanbin.app/api/boards/&lt;your-board-key&gt;/tasks/{task-id} \
+  -H "Content-Type: application/json" \
+  -d '{"status": "IN_PROGRESS"}'
+
+# 4. View the board
+curl -s https://kanbin.app/api/boards/a1b2c3d4 | jq</code></pre>
+        </article>
+
+        <article class="qs-card">
+          <h3>Via CLI</h3>
+          <p>Install the <code>kb</code> binary and manage boards from your terminal or CI pipeline.</p>
+          <pre><code># Install (Go required)
+go install github.com/zeeshanejaz/kanbin/cli/cmd/kanbin@latest
+
+# Create a board
+kb board create "weekend-hack"
+# → Board created!
+# → Title: weekend-hack
+# → Key:   f9e8d7c6
+
+# Add tasks
+kb task add "Setup CI" --board f9e8d7c6
+kb task add "Write tests" --board f9e8d7c6
+kb task add "Deploy" --board f9e8d7c6
+
+# Move a task
+kb task move {task-id} --status IN_PROGRESS
+
+# View the board
+kb board view f9e8d7c6
+# → === weekend-hack [f9e8d7c6] ===
+# → ID        | STATUS      | TITLE
+# → ----------------------------------------
+# → a1b2...   | TODO        | Setup CI
+# → c3d4...   | IN_PROGRESS | Write tests
+# → e5f6...   | TODO        | Deploy</code></pre>
+        </article>
+
+        <article class="qs-card qs-card-wide">
+          <h3>For AI Agents</h3>
+          <p>Give your agent a board key. It posts progress as it works. You watch.</p>
+          <pre><code># Agent system prompt snippet:
+You have access to a Kanbin board at https://kanbin.app/api/boards/a1b2c3d4
+Use it to track your progress. Available statuses: TODO, IN_PROGRESS, DONE
+
+POST /api/boards/{key}/tasks          → Create a task
+PUT  /api/boards/{key}/tasks/{id}     → Update status, title, description, position
+GET  /api/boards/{key}                → View all tasks on the board
+
+# The human opens the board URL in a browser and sees
+# the agent's progress in real time. No polling needed
+# with ETag support for efficient cache validation.</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── API REFERENCE ── -->
+    <section id="api" class="l-section l-section-api">
+      <div class="section-header">
+        <span class="section-label mono">02</span>
+        <h2>API Reference</h2>
+      </div>
+      <p class="section-desc">
+        Base URL: <code>https://kanbin.app/api</code> —
+        All responses are <code>application/json</code>.
+        No authentication required for anonymous boards.
+      </p>
+
+      <!-- Health -->
+      <article class="endpoint">
+        <div class="endpoint-header">
+          <span class="method method-get">GET</span>
+          <code class="endpoint-path">/api/health</code>
+        </div>
+        <p>Service health check.</p>
+        <details>
+          <summary>Response <code>200</code></summary>
+          <pre><code>{
+  "status": "ok",
+  "message": "Kanbin API is live",
+  "version": "1.0.0"
+}</code></pre>
+        </details>
+      </article>
+
+      <!-- Create Board -->
+      <article class="endpoint">
+        <div class="endpoint-header">
+          <span class="method method-post">POST</span>
+          <code class="endpoint-path">/api/boards</code>
+        </div>
+        <p>Create a new board. Returns a unique <code>key</code> for sharing. Board expires in 7 days.</p>
+        <details>
+          <summary>Request body</summary>
+          <pre><code>{
+  "title": "string"  // required — board name
+}</code></pre>
+        </details>
+        <details>
+          <summary>Response <code>201</code></summary>
+          <pre><code>{
+  "id": "uuid",
+  "key": "a1b2c3d4",        // 8-char hex key — use this to share
+  "title": "my-sprint",
+  "created_at": "2026-02-22T10:00:00Z",
+  "expires_at": "2026-03-01T10:00:00Z"
+}</code></pre>
+        </details>
+      </article>
+
+      <!-- Get Board -->
+      <article class="endpoint">
+        <div class="endpoint-header">
+          <span class="method method-get">GET</span>
+          <code class="endpoint-path">/api/boards/&#123;key&#125;</code>
+        </div>
+        <p>
+          Retrieve a board and all its tasks. Supports <code>ETag</code> /
+          <code>If-None-Match</code> for cache validation — returns <code>304</code> if unchanged.
+          Returns <code>410 Gone</code> if the board has expired.
+        </p>
+        <details>
+          <summary>Response <code>200</code></summary>
+          <pre><code>{
+  "id": "uuid",
+  "key": "a1b2c3d4",
+  "title": "my-sprint",
+  "created_at": "2026-02-22T10:00:00Z",
+  "expires_at": "2026-03-01T10:00:00Z",
+  "tasks": [
+    {
+      "id": "uuid",
+      "board_id": "uuid",
+      "title": "Implement auth",
+      "description": "",
+      "status": "TODO",
+      "position": 0,
+      "created_at": "2026-02-22T10:01:00Z",
+      "updated_at": "2026-02-22T10:01:00Z"
+    }
+  ]
+}</code></pre>
+        </details>
+        <details>
+          <summary>Headers</summary>
+          <pre><code>ETag: "etag-value"
+
+# Conditional request:
+If-None-Match: "etag-value"  →  304 Not Modified</code></pre>
+        </details>
+      </article>
+
+      <!-- Delete Board -->
+      <article class="endpoint">
+        <div class="endpoint-header">
+          <span class="method method-delete">DELETE</span>
+          <code class="endpoint-path">/api/boards/&#123;key&#125;</code>
+        </div>
+        <p>Delete a board and all its tasks.</p>
+        <details>
+          <summary>Response <code>200</code></summary>
+          <pre><code>{"message": "deleted"}</code></pre>
+        </details>
+      </article>
+
+      <hr class="divider" />
+
+      <!-- Create Task -->
+      <article class="endpoint">
+        <div class="endpoint-header">
+          <span class="method method-post">POST</span>
+          <code class="endpoint-path">/api/boards/&#123;key&#125;/tasks</code>
+        </div>
+        <p>
+          Add a task to a board. Maximum <strong>100 tasks</strong> per board.
+          If <code>status</code> is omitted, defaults to <code>TODO</code>.
+        </p>
+        <details>
+          <summary>Request body</summary>
+          <pre><code>{
+  "title": "string",          // required
+  "description": "string",    // optional
+  "status": "TODO"            // optional — TODO | IN_PROGRESS | DONE
+}</code></pre>
+        </details>
+        <details>
+          <summary>Response <code>201</code></summary>
+          <pre><code>{
+  "id": "uuid",
+  "board_id": "uuid",
+  "title": "Implement auth",
+  "description": "",
+  "status": "TODO",
+  "position": 0,
+  "created_at": "2026-02-22T10:01:00Z",
+  "updated_at": "2026-02-22T10:01:00Z"
+}</code></pre>
+        </details>
+        <details>
+          <summary>Error <code>422</code></summary>
+          <pre><code>{"error": "Task limit reached (100)"}</code></pre>
+        </details>
+      </article>
+
+      <!-- Update Task -->
+      <article class="endpoint">
+        <div class="endpoint-header">
+          <span class="method method-put">PUT</span>
+          <code class="endpoint-path">/api/boards/&#123;key&#125;/tasks/&#123;id&#125;</code>
+        </div>
+        <p>
+          Partial update. Send only the fields you want to change.
+          Accepts <code>title</code>, <code>description</code>, <code>status</code>, <code>position</code>.
+          The board key in the path proves ownership — returns <code>403</code> if it doesn't match the task's board.
+        </p>
+        <details>
+          <summary>Request body (all fields optional)</summary>
+          <pre><code>{
+  "title": "string",
+  "description": "string",
+  "status": "IN_PROGRESS",    // TODO | IN_PROGRESS | DONE
+  "position": 2               // integer — sort order
+}</code></pre>
+        </details>
+        <details>
+          <summary>Response <code>200</code></summary>
+          <pre><code>{
+  "id": "uuid",
+  "board_id": "uuid",
+  "title": "Implement auth",
+  "description": "Add JWT middleware",
+  "status": "IN_PROGRESS",
+  "position": 0,
+  "created_at": "2026-02-22T10:01:00Z",
+  "updated_at": "2026-02-22T10:05:00Z"
+}</code></pre>
+        </details>
+      </article>
+
+      <!-- Delete Task -->
+      <article class="endpoint">
+        <div class="endpoint-header">
+          <span class="method method-delete">DELETE</span>
+          <code class="endpoint-path">/api/boards/&#123;key&#125;/tasks/&#123;id&#125;</code>
+        </div>
+        <p>
+          Delete a single task by UUID.
+          The board key in the path proves ownership — returns <code>403</code> if it doesn't match the task's board.
+        </p>
+        <details>
+          <summary>Response <code>200</code></summary>
+          <pre><code>{"message": "deleted"}</code></pre>
+        </details>
+      </article>
+
+      <!-- Error format -->
+      <article class="endpoint endpoint-note">
+        <h3>Error Format</h3>
+        <p>All errors return a JSON object with a single <code>error</code> key:</p>
+        <pre><code>{"error": "Board not found"}                     // 404
+{"error": "Board has expired"}                   // 410
+{"error": "Invalid request body"}                // 400
+{"error": "Invalid task ID format"}              // 400
+{"error": "Task limit reached (100)"}            // 422
+{"error": "Forbidden"}                           // 403 — wrong board key in path
+{"error": "Rate limit exceeded — try again later"} // 429</code></pre>
+        <p>Rate-limited responses also include a <code>Retry-After: 60</code> header.</p>
+      </article>
+    </section>
+
+    <!-- ── CLI REFERENCE ── -->
+    <section id="cli" class="l-section">
+      <div class="section-header">
+        <span class="section-label mono">03</span>
+        <h2>CLI Reference</h2>
+      </div>
+      <p class="section-desc">
+        The <code>kb</code> CLI wraps the REST API for terminal and CI/CD use.
+        Install with Go or download a binary from releases.<br>
+        Set <code>KANBIN_URL</code> or use <code>--server</code> to override the default endpoint.
+      </p>
+
+      <div class="cli-grid">
+        <article class="cli-cmd">
+          <h3 class="mono">kb board create &lt;title&gt;</h3>
+          <p>Create a new board. Prints the board key for sharing.</p>
+          <pre><code>$ kb board create "deploy-pipeline"
+Board created successfully!
+Title: deploy-pipeline
+Key:   f9e8d7c6</code></pre>
+        </article>
+
+        <article class="cli-cmd">
+          <h3 class="mono">kb board view &lt;key&gt;</h3>
+          <p>Display a board with all tasks in a table format.</p>
+          <pre><code>$ kb board view f9e8d7c6
+=== deploy-pipeline [f9e8d7c6] ===
+
+ID        | STATUS      | TITLE        | DESCRIPTION
+------------------------------------------------
+a1b2...   | TODO        | Setup CI     |
+c3d4...   | IN_PROGRESS | Write tests  |
+e5f6...   | DONE        | Deploy       |</code></pre>
+        </article>
+
+        <article class="cli-cmd">
+          <h3 class="mono">kb board delete &lt;key&gt;</h3>
+          <p>Delete a board and all its tasks.</p>
+          <pre><code>$ kb board delete f9e8d7c6
+Board f9e8d7c6 deleted successfully.</code></pre>
+        </article>
+
+        <article class="cli-cmd">
+          <h3 class="mono">kb task add &lt;title&gt; --board &lt;key&gt;</h3>
+          <p>Add a task to a board. Defaults to <code>TODO</code> status.</p>
+          <pre><code>$ kb task add "Run migrations" --board f9e8d7c6
+Task [a1b2c3d4-...] added: Run migrations</code></pre>
+        </article>
+
+        <article class="cli-cmd">
+          <h3 class="mono">kb task move &lt;id&gt; --status &lt;STATUS&gt;</h3>
+          <p>Change a task's status. Values: <code>TODO</code>, <code>IN_PROGRESS</code>, <code>DONE</code>.</p>
+          <pre><code>$ kb task move a1b2c3d4-... --status DONE
+Task a1b2c3d4-... moved to DONE</code></pre>
+        </article>
+
+        <article class="cli-cmd">
+          <h3 class="mono">kb task list --board &lt;key&gt;</h3>
+          <p>List all tasks on a board, one per line.</p>
+          <pre><code>$ kb task list --board f9e8d7c6
+[TODO]        a1b2... | Run migrations
+[IN_PROGRESS] c3d4... | Write tests
+[DONE]        e5f6... | Deploy</code></pre>
+        </article>
+
+        <article class="cli-cmd">
+          <h3 class="mono">kb task delete &lt;id&gt;</h3>
+          <p>Delete a single task by ID.</p>
+          <pre><code>$ kb task delete a1b2c3d4-...
+Task a1b2c3d4-... deleted.</code></pre>
+        </article>
+
+        <article class="cli-cmd">
+          <h3 class="mono">Global Flags</h3>
+          <table class="flags-table">
+            <thead>
+              <tr><th>Flag</th><th>Env</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>--server, -s</code></td><td><code>KANBIN_URL</code></td><td>Override base API URL</td></tr>
+            </tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── DATA MODELS ── -->
+    <section id="models" class="l-section">
+      <div class="section-header">
+        <span class="section-label mono">04</span>
+        <h2>Data Models</h2>
+      </div>
+
+      <div class="models-grid">
+        <article class="model-card">
+          <h3>Board</h3>
+          <table class="model-table">
+            <thead>
+              <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>id</code></td><td><code>uuid</code></td><td>Unique identifier</td></tr>
+              <tr><td><code>key</code></td><td><code>string</code></td><td>32-char hex key for sharing and task ownership</td></tr>
+              <tr><td><code>title</code></td><td><code>string</code></td><td>Board name</td></tr>
+              <tr><td><code>created_at</code></td><td><code>datetime</code></td><td>ISO 8601 creation timestamp</td></tr>
+              <tr><td><code>expires_at</code></td><td><code>datetime</code></td><td>Auto-expiry, default +7 days</td></tr>
+            </tbody>
+          </table>
+          <pre><code>// JSON representation
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "key": "a1b2c3d4",
+  "title": "my-sprint",
+  "created_at": "2026-02-22T10:00:00Z",
+  "expires_at": "2026-03-01T10:00:00Z"
+}</code></pre>
+        </article>
+
+        <article class="model-card">
+          <h3>Task</h3>
+          <table class="model-table">
+            <thead>
+              <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>id</code></td><td><code>uuid</code></td><td>Unique identifier</td></tr>
+              <tr><td><code>board_id</code></td><td><code>uuid</code></td><td>Parent board reference</td></tr>
+              <tr><td><code>title</code></td><td><code>string</code></td><td>Task name</td></tr>
+              <tr><td><code>description</code></td><td><code>string</code></td><td>Optional details</td></tr>
+              <tr><td><code>status</code></td><td><code>enum</code></td><td><code>TODO</code> · <code>IN_PROGRESS</code> · <code>DONE</code></td></tr>
+              <tr><td><code>position</code></td><td><code>int</code></td><td>Sort order within status column</td></tr>
+              <tr><td><code>created_at</code></td><td><code>datetime</code></td><td>ISO 8601 creation timestamp</td></tr>
+              <tr><td><code>updated_at</code></td><td><code>datetime</code></td><td>ISO 8601 last modification</td></tr>
+            </tbody>
+          </table>
+          <pre><code>// JSON representation
+{
+  "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+  "board_id": "550e8400-e29b-41d4-a716-446655440000",
+  "title": "Implement auth",
+  "description": "Add JWT middleware",
+  "status": "IN_PROGRESS",
+  "position": 0,
+  "created_at": "2026-02-22T10:01:00Z",
+  "updated_at": "2026-02-22T10:05:00Z"
+}</code></pre>
+        </article>
+
+        <article class="model-card">
+          <h3>TaskStatus Enum</h3>
+          <table class="model-table">
+            <thead>
+              <tr><th>Value</th><th>Meaning</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>TODO</code></td><td>Not started — default for new tasks</td></tr>
+              <tr><td><code>IN_PROGRESS</code></td><td>Currently being worked on</td></tr>
+              <tr><td><code>DONE</code></td><td>Completed</td></tr>
+            </tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── PHILOSOPHY ── -->
+    <section id="philosophy" class="l-section-dark">
+      <div class="section-header">
+        <span class="section-label mono">05</span>
+        <h2>Philosophy</h2>
+      </div>
+
+      <div class="philosophy-text">
+        <p class="philosophy-contrast">
+          Most project tools assume you want <em>permanence</em>.
+        </p>
+        <p class="philosophy-statement">
+          We assume you want<br>
+          <span class="accent-text">disposability.</span>
+        </p>
+      </div>
+
+      <div class="principles-grid">
+        <article class="principle">
+          <h3 class="mono">Ephemeral by default</h3>
+          <p>Boards expire after 7 days. No clutter, no cleanup, no legacy debt. Create, use, forget.</p>
+        </article>
+        <article class="principle">
+          <h3 class="mono">Zero friction entry</h3>
+          <p>No account needed. No OAuth flow. No email verification. POST to create, GET to read. That's it.</p>
+        </article>
+        <article class="principle">
+          <h3 class="mono">Agent-first design</h3>
+          <p>The API and CLI are primary interfaces. The web UI exists for human observers. Machines create; humans monitor.</p>
+        </article>
+        <article class="principle">
+          <h3 class="mono">Minimal surface area</h3>
+          <p>Boards have tasks. Tasks have statuses. That's the entire data model. No labels, no sprints, no story points, no swimlane customization.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── ARCHITECTURE ── -->
+    <section id="architecture" class="l-section">
+      <div class="section-header">
+        <span class="section-label mono">06</span>
+        <h2>Architecture</h2>
+      </div>
+
+      <div class="arch-grid">
+        <article class="arch-card">
+          <div class="arch-icon mono">[BE]</div>
+          <h3>Backend</h3>
+          <p>Go + Chi router. PostgreSQL storage. Stateless REST API. Deployed on Fly.io. Handles board lifecycle, task CRUD, ETags, and auto-expiry.</p>
+          <ul class="arch-stack mono">
+            <li>Go 1.22+</li>
+            <li>Chi v5</li>
+            <li>PostgreSQL</li>
+            <li>Fly.io</li>
+          </ul>
+        </article>
+        <article class="arch-card">
+          <div class="arch-icon mono">[FE]</div>
+          <h3>Frontend</h3>
+          <p>React + TypeScript + Vite. Drag-and-drop Kanban UI. Real-time board view with ETag-based polling. Deployed as static assets behind Nginx.</p>
+          <ul class="arch-stack mono">
+            <li>React 19</li>
+            <li>TypeScript</li>
+            <li>Vite</li>
+            <li>TanStack Query</li>
+          </ul>
+        </article>
+        <article class="arch-card">
+          <div class="arch-icon mono">[CLI]</div>
+          <h3>CLI</h3>
+          <p>Go binary using Cobra. Wraps the REST API for terminal use. Perfect for shell scripts, CI pipelines, and agent system prompts.</p>
+          <ul class="arch-stack mono">
+            <li>Go 1.22+</li>
+            <li>Cobra</li>
+            <li>Single binary</li>
+            <li>Cross-platform</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── SELF-HOSTING ── -->
+    <section id="self-hosting" class="l-section">
+      <div class="section-header">
+        <span class="section-label mono">07</span>
+        <h2>Self-Hosting</h2>
+      </div>
+      <p class="selfhost-intro">
+        Run your own Kanbin instance in minutes — database, backend, and frontend all in one command.
+      </p>
+
+      <div class="selfhost-grid">
+        <div class="selfhost-step">
+          <div class="selfhost-num mono">01</div>
+          <h3>Start everything</h3>
+          <p>Clone the repo and bring up the full stack with Docker Compose. Postgres, backend API, and the web UI all start together.</p>
+          <pre class="selfhost-code"><code>git clone https://github.com/zeeshanejaz/kanbin
+cd kanbin
+docker compose up -d</code></pre>
+          <p class="selfhost-note mono">Web UI → <strong>:3000</strong> · API → <strong>:8080</strong> · DB → <strong>:5432</strong></p>
+        </div>
+
+        <div class="selfhost-step">
+          <div class="selfhost-num mono">02</div>
+          <h3>Open the board</h3>
+          <p>Navigate to your instance in the browser. The frontend proxies all <code>/api/</code> requests to the backend container automatically — no CORS config needed.</p>
+          <pre class="selfhost-code"><code>open http://localhost:3000</code></pre>
+          <p class="selfhost-note mono">Nginx handles the <code>/api/</code> → backend proxy internally.</p>
+        </div>
+
+        <div class="selfhost-step">
+          <div class="selfhost-num mono">03</div>
+          <h3>Point the CLI at your instance</h3>
+          <p>Use the <code>--server</code> flag or set <code>KANBIN_URL</code> once for the session.</p>
+          <pre class="selfhost-code"><code># one-off
+kanbin --server http://localhost:8080 board list
+
+# or export once
+export KANBIN_URL=http://localhost:8080
+kanbin board create "my-sprint"
+kanbin task add &lt;board-key&gt; "Fix auth bug"</code></pre>
+          <p class="selfhost-note mono"><code>--server</code> overrides <code>KANBIN_URL</code> which overrides the built-in default.</p>
+        </div>
+      </div>
+
+      <div class="selfhost-requirements">
+        <h4 class="mono">Requirements</h4>
+        <div class="selfhost-req-grid">
+          <div class="selfhost-req"><span class="mono req-label">Docker</span><span>with Compose v2</span></div>
+          <div class="selfhost-req"><span class="mono req-label">Go</span><span>1.22+ (CLI only)</span></div>
+          <div class="selfhost-req"><span class="mono req-label">Ports</span><span>3000 · 8080 · 5432</span></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer class="l-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo">kanbin<span class="accent">_</span></span>
+        <p class="footer-tagline">Ephemeral Kanban for the agentic era.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Docs</h4>
+        <a href="#quickstart">Quickstart</a>
+        <a href="#api">API Reference</a>
+        <a href="#cli">CLI Reference</a>
+        <a href="#models">Data Models</a>
+      </div>
+      <div class="footer-col">
+        <h4>Project</h4>
+        <a href="https://github.com/zeeshanejaz/kanbin" target="_blank" rel="noopener">GitHub</a>
+        <a href="#philosophy">Philosophy</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#self-hosting">Self-Hosting</a>
+      </div>
+      <div class="footer-status">
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          <span class="mono">System Operational</span>
+        </div>
+        <span class="mono footer-version">v1.0.0</span>
+      </div>
+    </div>
+    <div class="footer-legal mono">
+      <span>© 2026 Kanbin</span>
+      <span>MIT License</span>
+    </div>
+  </footer>
+
+</div><!-- /.landing -->
+
+<script>
+  // ── Mobile menu toggle ──────────────────────────────
+  function toggleMenu() {
+    var menu = document.getElementById('nav-links');
+    var toggle = document.getElementById('nav-toggle');
+    var expanded = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!expanded));
+    menu.classList.toggle('open');
+  }
+  function closeMenu() {
+    var menu = document.getElementById('nav-links');
+    var toggle = document.getElementById('nav-toggle');
+    if (menu) menu.classList.remove('open');
+    if (toggle) toggle.setAttribute('aria-expanded', 'false');
+  }
+
+  // ── Navbar scroll morph ─────────────────────────────
+  (function () {
+    var navbar = document.getElementById('l-navbar');
+    var hero = document.getElementById('l-hero');
+    if (!navbar || !hero || !window.IntersectionObserver) return;
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        navbar.classList.toggle('scrolled', !e.isIntersecting);
+      });
+    }, { threshold: 0, rootMargin: '-60px 0px 0px 0px' });
+    obs.observe(hero);
+  })();
+
+  // ── Scroll reveal ───────────────────────────────────
+  (function () {
+    if (!window.IntersectionObserver) return;
+    var sel = [
+      '.landing .endpoint', '.landing .qs-card', '.landing .cli-cmd',
+      '.landing .model-card', '.landing .arch-card', '.landing .principle',
+      '.landing .use-case', '.landing .selfhost-step'
+    ].join(', ');
+    var targets = document.querySelectorAll(sel);
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var parent = e.target.parentElement;
+        if (parent) {
+          var idx = Array.prototype.indexOf.call(parent.children, e.target);
+          e.target.style.transitionDelay = (idx * 0.06) + 's';
+        }
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    targets.forEach(function (el) { obs.observe(el); });
+  })();
+
+  // ── Create board form ───────────────────────────────
+  function handleCreateBoard(e) {
+    e.preventDefault();
+    var input = document.getElementById('board-name-input');
+    var btn = document.getElementById('create-board-btn');
+    var errEl = document.getElementById('hero-error');
+    var title = input.value.trim();
+    if (!title) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Creating…';
+    errEl.style.display = 'none';
+
+    fetch('/api/boards', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: title })
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function (board) {
+        window.location.href = '/b/' + board.key;
+      })
+      .catch(function () {
+        errEl.textContent = 'Failed to create board. Please try again.';
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Create Board →';
+      });
+  }
+</script>
+</body>
+</html>
