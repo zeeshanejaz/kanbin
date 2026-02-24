@@ -120,18 +120,20 @@ User need to provide user story description and Task description along with the 
 7. Breakdown the specification into smaller, manageable tasks or phases. Plan the implementation steps accordingly e.g., each step can be a separate commit or PR and independently testable.
 8. Prefer consistency with existing code patterns and architecture in the codebase.
 9. Create a markdown file in the `.specs/<short-name-of-the-spec>/` directory with the specification details including the phases and tasks breakdown. The task number should correspond to the work item ID from the branch name if applicable.
-10. **KB Board Setup** (if user has kb CLI available):
+10. **VERY IMPORTANT: KB Board Setup**
+    - Clear existing `.work-context.md.local` file if it exists to avoid confusion with old boards
     - Check current branch name using `git branch --show-current`
-    - Suggest creating a KB board: `kb board create "<feature-name-from-branch>"`
+    - Create a KB board using command: `kb board create "<feature-name-from-branch>"`
     - Save the returned Board Key and Board ID
-    - For each phase/task in the specification, suggest creating KB tasks:
+    - Open the board in a browser using the url https://kanbin.ai/board/<BOARD-KEY> (replace <BOARD-KEY> with the actual key returned from the create command)
+    - For each phase/task in the specification, create KB tasks:
       ```bash
       kb task add "Phase 1.1: <task-description>" --board <BOARD-KEY>
       kb task add "Phase 1.2: <task-description>" --board <BOARD-KEY>
       # ... etc
       ```
     - Present the board key and all task IDs to the user
-    - Recommend saving this information in a `.work-context.md.local` file:
+    - MUST save this information in a `.work-context.md.local` file:
       ```markdown
       ## Work Context
       **Branch**: <branch-name>
