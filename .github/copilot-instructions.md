@@ -175,11 +175,11 @@ When the user types `/implement` followed by a specification file path, implemen
 **Phase 2: Incremental Implementation**
 7. Implement one step at a time, marking it as `[~]` In Progress in the plan
 8. **Before starting each step**:
-   - If KB board exists, update task status: `kb task move <TASK-ID> --status IN_PROGRESS`
+   - If KB board exists, update task status: `kb task move <TASK-ID> --status IN_PROGRESS --board <BOARD-KEY>`
    - Remind user which KB task is being worked on
 9. After completing each step:
    - Update the plan document to mark the step as `[✓]` Completed
-   - **If KB board exists**: Update task status: `kb task move <TASK-ID> --status DONE`
+   - **If KB board exists**: Update task status: `kb task move <TASK-ID> --status DONE --board <BOARD-KEY>`
    - Run relevant tests (lint, format, type check, unit tests)
    - Present a summary to the user:
      ```
