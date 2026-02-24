@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { isAxiosError } from 'axios';
 import { formatDistanceToNow } from 'date-fns';
 import { 
@@ -32,7 +32,6 @@ const COLUMNS = [
 
 export default function BoardView() {
     const { key } = useParams<{ key: string }>();
-    const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
     const [activeTask, setActiveTask] = useState<Task | null>(null);
@@ -186,12 +185,12 @@ export default function BoardView() {
 
         try {
             await api.deleteBoard(key);
-            navigate('/');
+            window.location.href = '/';
         } catch (err) {
             console.error("Failed to delete board", err);
             alert("Failed to delete board");
         }
-    }, [key, navigate]);
+    }, [key]);
 
     const handleCopyLink = useCallback(async () => {
         if (!key) return;
@@ -220,7 +219,7 @@ export default function BoardView() {
             <div className="error-container">
                 <h2>Oops!</h2>
                 <p>{errorMessage}</p>
-                <button className="btn-primary" onClick={() => navigate('/')}>Back Home</button>
+                <button className="btn-primary" onClick={() => { window.location.href = '/'; }}>Back Home</button>
             </div>
         );
     }
