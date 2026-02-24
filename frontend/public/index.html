@@ -173,7 +173,7 @@
       </div>
 
       <div class="quickstart-grid">
-        <article class="qs-card">
+        <article class="qs-card qs-card-wide">
           <h3>Via REST API</h3>
           <p>Create a board and add tasks with plain HTTP. No auth required.</p>
           <pre><code># 1. Create a board
@@ -193,10 +193,22 @@ curl -s -X POST https://kanbin.app/api/boards \
 # 2. Add a task
 curl -s -X POST https://kanbin.app/api/boards/a1b2c3d4/tasks \
   -H "Content-Type: application/json" \
-  -d '{"title": "Implement auth", "status": "TODO"}'
+  -d '{"title": "Implement auth", "status": "TODO"}' | jq
+
+# Response:
+# {
+#   "id": "7c9e6679",
+#   "board_id": "a1b2c3d4",
+#   "title": "Implement auth",
+#   "description": "",
+#   "status": "TODO",
+#   "position": 0,
+#   "created_at": "2026-02-22T10:01:00Z",
+#   "updated_at": "2026-02-22T10:01:00Z"
+# }
 
 # 3. Move task to IN_PROGRESS
-curl -s -X PUT https://kanbin.app/api/boards/&lt;your-board-key&gt;/tasks/{task-id} \
+curl -s -X PUT https://kanbin.app/api/boards/a1b2c3d4/tasks/7c9e6679 \
   -H "Content-Type: application/json" \
   -d '{"status": "IN_PROGRESS"}'
 
@@ -204,7 +216,7 @@ curl -s -X PUT https://kanbin.app/api/boards/&lt;your-board-key&gt;/tasks/{task-
 curl -s https://kanbin.app/api/boards/a1b2c3d4 | jq</code></pre>
         </article>
 
-        <article class="qs-card">
+        <article class="qs-card qs-card-wide">
           <h3>Via CLI</h3>
           <p>Install the <code>kb</code> binary and manage boards from your terminal or CI pipeline.</p>
           <pre><code># Install (Go required)
@@ -236,18 +248,21 @@ kb board view f9e8d7c6
 
         <article class="qs-card qs-card-wide">
           <h3>For AI Agents</h3>
-          <p>Give your agent a board key. It posts progress as it works. You watch.</p>
+          <p>Your agent creates its own board, shares the link with you, then posts progress as it works. You watch.</p>
           <pre><code># Agent system prompt snippet:
-You have access to a Kanbin board at https://kanbin.app/api/boards/a1b2c3d4
-Use it to track your progress. Available statuses: TODO, IN_PROGRESS, DONE
+At the start of every task, create a Kanbin board to track your progress:
 
-POST /api/boards/{key}/tasks          → Create a task
-PUT  /api/boards/{key}/tasks/{id}     → Update status, title, description, position
-GET  /api/boards/{key}                → View all tasks on the board
+  POST https://kanbin.app/api/boards
+  Body: {"title": "your-task-name"}
 
-# The human opens the board URL in a browser and sees
-# the agent's progress in real time. No polling needed
-# with ETag support for efficient cache validation.</code></pre>
+Then immediately tell the human:
+  "You can follow my progress at: https://kanbin.app/b/{key}"
+
+As you work, create and update tasks on the board:
+  POST /api/boards/{key}/tasks          → Create a task (status: TODO)
+  PUT  /api/boards/{key}/tasks/{id}     → Move to IN_PROGRESS or DONE
+
+Available statuses: TODO | IN_PROGRESS | DONE</code></pre>
         </article>
       </div>
     </section>
