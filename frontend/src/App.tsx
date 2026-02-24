@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import Landing from './pages/Landing';
+import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import Home from './pages/Home';
 import BoardView from './pages/Board';
 import './index.css';
 
@@ -7,7 +7,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Landing />} />
+        {/* / is served as a static HTML page by Nginx (AI/scraper friendly).
+            Client-side navigation to / (e.g. clicking the brand logo from a board)
+            redirects to /home which shows the lightweight SPA home page. */}
+        <Route path="/" element={<Navigate to="/home" replace />} />
+        <Route path="/home" element={<Home />} />
         <Route
           path="/b/:key"
           element={
