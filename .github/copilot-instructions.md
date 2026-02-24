@@ -125,7 +125,7 @@ User need to provide user story description and Task description along with the 
     - Check current branch name using `git branch --show-current`
     - Create a KB board using command: `kb board create "<feature-name-from-branch>"`
     - Save the returned Board Key and Board ID
-    - Open the board in a browser using the url https://kanbin.ai/board/<BOARD-KEY> (replace <BOARD-KEY> with the actual key returned from the create command)
+    - Show the board link to user so that they can open it in browser using the url https://kanbin.app/b/<BOARD-KEY> (replace <BOARD-KEY> with the actual key returned from the create command)
     - For each phase/task in the specification, create KB tasks:
       ```bash
       kb task add "Phase 1.1: <task-description>" --board <BOARD-KEY>
@@ -133,7 +133,7 @@ User need to provide user story description and Task description along with the 
       # ... etc
       ```
     - Present the board key and all task IDs to the user
-    - MUST save this information in a `.work-context.md.local` file:
+    - MUST save this information in a `.work-context.md.local` file inside the `.specs/<short-name-of-the-spec>/` directory for reference during implementation and PR generation. The file should include:
       ```markdown
       ## Work Context
       **Branch**: <branch-name>
@@ -152,7 +152,7 @@ When the user types `/implement` followed by a specification file path, implemen
 **Phase 1: Planning**
 1. Read and analyze the provided specification document
 2. **Check for KB board context**:
-   - Look for `.work-context.md.local` file or ask user for Board Key and Task IDs
+   - Look for `.work-context.md.local` file inside inside the `.specs/<short-name-of-the-spec>/` directory to find Board Key and Task IDs
    - If board exists, load the task list to align implementation with planned tasks
    - If no board exists, suggest creating one (see /spec step 10)
 3. Create an implementation plan document named `<spec-name>-implementation-plan.md` in the same directory as the spec
@@ -174,12 +174,13 @@ When the user types `/implement` followed by a specification file path, implemen
 
 **Phase 2: Incremental Implementation**
 7. Implement one step at a time, marking it as `[~]` In Progress in the plan
-8. **Before starting each step**:
+8. Must update the KB board with the current task status for each step:
+   - When starting a step, run `kb task move <TASK-ID> --status IN_PROGRESS --board <BOARD-KEY>`
+   - When completing a step, run `kb task move <TASK-ID> --status DONE --board <BOARD-KEY>`
    - If KB board exists, update task status: `kb task move <TASK-ID> --status IN_PROGRESS --board <BOARD-KEY>`
    - Remind user which KB task is being worked on
 9. After completing each step:
    - Update the plan document to mark the step as `[✓]` Completed
-   - **If KB board exists**: Update task status: `kb task move <TASK-ID> --status DONE --board <BOARD-KEY>`
    - Run relevant tests (lint, format, type check, unit tests)
    - Present a summary to the user:
      ```
@@ -259,14 +260,14 @@ When the user types `/implement` followed by a specification file path, implemen
 - Offer to pause if more than 5 consecutive steps have been completed without user interaction
 - If encountering errors or uncertainties, pause and ask for clarification
 - Use the manage_todo_list tool to track implementation progress
-- Maintain `.work-context.md.local` file with current board state for easy reference
+- Maintain `.work-context.md.local` file (inside the `.specs/<short-name-of-the-spec>/` directory) with current board state for easy reference
 
 ## /pr
 When the user types `/pr`, generate a Pull Request message for merging the current branch into main by following these steps:
 
 1. Get the current branch name using git commands
 2. **Check for KB board context**:
-   - Look for `.work-context.md.local` file or Board Key
+   - Look for `.work-context.md.local` file inside the `.specs/<short-name-of-the-spec>/` directory to find Board Key and Task IDs
    - If board exists, run `kb board view <BOARD-KEY>` to get task completion status
    - Include board summary in PR context
 3. Get the git diff between main and the current branch using `git diff main...HEAD`
